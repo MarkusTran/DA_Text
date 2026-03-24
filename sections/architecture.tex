@@ -1,0 +1,183 @@
+\section{Datenbanken}
+Um Dateneingaben persistent zu speichern und strukturiert zu verarbeiten, ist der
+Einsatz einer Datenbank unerlässlich. Eine Datenbank stellt die zentrale Instanz
+für die Speicherung, Organisation und Verwaltung von Daten dar. Sie ermöglicht
+nicht nur das einfache Ablegen von Informationen, sondern auch deren gezielte
+Abfrage, Aktualisierung und Löschung. Um auf die gespeicherten Daten zugreifen
+und diese verwalten zu können, wird ein sogenanntes Datenbankmanagementsystem
+(DBMS) eingesetzt, das als Vermittler zwischen der Anwendung und den physisch
+gespeicherten Daten fungiert.
+
+\subsection{Datenbank definition}
+Eine Datenbank ist eine strukturierte Sammlung von Daten, die so organisiert ist,
+dass sie effizient gespeichert, abgerufen und verwaltet werden kann. Im
+Gegensatz zur einfachen Dateiablage bietet eine Datenbank Mechanismen zur
+Vermeidung von Redundanzen, zur Sicherstellung der Datenkonsistenz sowie zur
+gleichzeitigen Nutzung durch mehrere Benutzer oder Anwendungen.
+
+Grundlegende Begriffe im Datenbankumfeld sind:
+
+\begin{itemize}
+    \item \textbf{Entität}: Ein eindeutig identifizierbares Objekt der realen Welt,
+    das in der Datenbank abgebildet wird (z.\,B. ein Benutzer oder ein
+    Streaming-Anbieter).
+    \item \textbf{Attribut}: Eine Eigenschaft einer Entität (z.\,B. Name oder ID).
+    \item \textbf{Relation}: Eine Tabelle in einer relationalen Datenbank, die
+    Entitäten eines bestimmten Typs speichert.
+    \item \textbf{Primärschlüssel}: Ein Attribut oder eine Kombination von
+    Attributen, das eine Entität eindeutig identifiziert.
+    \item \textbf{Fremdschlüssel}: Ein Attribut, das auf den Primärschlüssel einer
+    anderen Tabelle verweist und damit Beziehungen zwischen Entitäten abbildet.
+\end{itemize}
+
+
+
+\subsection{Datenbank Managment System - DBMS}
+
+Ein Datenbankmanagementsystem (DBMS) ist eine Software, die den Zugriff auf eine
+Datenbank verwaltet und kontrolliert. Es stellt die Schnittstelle zwischen der
+Anwendung und den physisch gespeicherten Daten dar und übernimmt Aufgaben wie
+die Speicherverwaltung, die Zugriffskontrolle, die Transaktionsverwaltung sowie
+die Sicherstellung der Datenkonsistenz.
+
+Ein DBMS besteht im Wesentlichen aus zwei zentralen Komponenten. Der
+\textit{physische Datenbestand} umfasst die tatsächlich auf einem Datenträger
+gespeicherten Daten. Der \textit{Systemkatalog} -- auch Data Dictionary genannt
+-- enthält Metainformationen über die Struktur der Datenbank, also Informationen
+über Tabellen, Spalten, Datentypen, Beziehungen und Zugriffsrechte. Mithilfe des
+Systemkatalogs kann das DBMS Anfragen korrekt interpretieren und die gespeicherten
+Daten strukturiert zurückgeben.
+
+Zu den bekanntesten DBMS zählen PostgreSQL, MySQL, Oracle Database und
+Microsoft SQL Server im relationalen Bereich sowie MongoDB und Redis im
+nicht-relationalen Bereich.
+
+\subsection{Datenbank Komponenten}
+Die Physische Speicherung aka der Datenbaestand wo was gespeichert ist und der Systemkatalog mit dem 
+ein DBMS dann auf die Datenzugreifen konnte.
+
+\section{Datenbankkonzept und architektonische Entscheidungen}
+\setauthor{Markus Tran}
+
+Für das Backend der Anwendung spielt die Wahl der geeigneten Datenbanktechnologie
+eine zentrale Rolle. Trotz vorhandener Kenntnisse im Bereich nicht-relationaler
+Datenbanken (NoSQL) -- wie etwa MongoDB oder Vektordatenbanken -- wurde im Rahmen
+dieses Projekts bewusst eine relationale Datenbank eingesetzt.
+
+Die Entscheidung für ein relationales Datenbanksystem basiert auf mehreren Faktoren.
+Die Anwendung weist eine klar strukturierte und logisch getrennte Datenarchitektur
+auf, wodurch sich die Daten und deren Beziehungen gut in einem relationalen Modell
+abbilden lassen. Entitäten und ihre Relationen konnten somit eindeutig definiert
+und konsistent strukturiert werden. Dieses Vorgehen entspricht dem etablierten
+Standard bei Anwendungen mit stark strukturierten Daten und klar definierten
+Geschäftsprozessen.
+
+Ein weiterer wesentlicher Aspekt ist die Skalierbarkeit des Projekts. Relationale
+Datenbanken bieten durch Normalisierung, Transaktionssicherheit (ACID-Prinzip) und
+klar definierte Beziehungen eine stabile Grundlage für zukünftige Erweiterungen.
+Voraussetzung für eine nachhaltige Skalierbarkeit ist jedoch eine sorgfältig
+durchdachte Datenbankstruktur. Eine frühzeitig geplante und konsistente Modellierung
+-- beispielsweise durch ein Entity-Relationship-Diagramm (ERD) -- ist essenziell,
+um spätere strukturelle Anpassungen zu minimieren.
+
+
+\subsection{Herausforderungen im Entwicklungsprozess}
+
+Im Verlauf der Diplomarbeit traten mehrere strukturelle Herausforderungen auf, die
+im Sinne einer transparenten Dokumentation offen dargestellt werden sollen.
+
+Zu Beginn der Implementierungsphase wurde ohne vollständig ausgearbeitetes
+Gesamtkonzept mit der Programmierung begonnen. Das Entity-Relationship-Diagramm
+wurde parallel zur Entwicklung erstellt, wodurch sich die Datenbankstruktur
+dynamisch entwickelte. Dieses iterative Vorgehen führte zwar zu schneller
+praktischer Umsetzung, hatte jedoch den Nachteil, dass strukturelle Änderungen
+im Nachhinein größeren Anpassungsaufwand verursachten.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\textwidth]{pics/erd_v1}
+    \caption{Erstes Entity-Relationship-Diagramm der Anwendung}
+    \label{fig:erd_v1}
+\end{figure}
+
+Eine weitere wesentliche Herausforderung ergab sich durch die späte Integration
+von Keycloak als Identity- und Access-Management-Lösung. Ursprünglich war die
+Benutzerverwaltung eigenständig implementiert worden. Durch die nachträgliche
+Einführung von Keycloak mussten die bestehenden User-Strukturen grundlegend
+überarbeitet werden. Dies hatte zur Folge, dass die Benutzerentitäten angepasst
+werden mussten, die Authentifizierungs- und Autorisierungslogik neu strukturiert
+wurde sowie abhängige Klassen und Beziehungen refaktoriert und teilweise neu
+implementiert werden mussten. Diese Umstellung führte zu zusätzlichem
+Entwicklungsaufwand, zeigte jedoch zugleich die Bedeutung einer frühzeitigen
+Architekturentscheidung -- insbesondere im Bereich der Sicherheits- und
+Authentifizierungsmechanismen.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\textwidth]{pics/erd_v2}
+    \caption{Überarbeitetes Entity-Relationship-Diagramm nach Integration von Keycloak}
+    \label{fig:erd_v2}
+\end{figure}
+
+
+\subsection{Modellierung der Many-to-Many-Beziehung und strukturelle Weiterentwicklung}
+
+Im weiteren Verlauf der Systemarchitektur zeigte sich deutlich der Mehrwert einer
+sauberen relationalen Modellierung, insbesondere bei der Abbildung von
+Many-to-Many-Beziehungen.
+
+Im Kontext der vorliegenden Applikation -- einem Mediatheken-Abonnement-Manager --
+besteht zwischen den Entitäten \textit{User} und \textit{Provider} keine einfache
+1:n-Beziehung, sondern eine n:m-Beziehung. Ein Benutzer kann mehrere Anbieter
+abonnieren, während ein Anbieter von mehreren Benutzern genutzt werden kann.
+
+Die Einführung einer eigenständigen Relationstabelle (\texttt{UserProviderSubscription})
+dient hierbei nicht ausschließlich der technischen Verknüpfung zweier Fremdschlüssel.
+Vielmehr übernimmt diese Tabelle eine fachlich zentrale Rolle innerhalb des
+Domänenmodells. In der Relationstabelle werden zusätzliche Attribute gespeichert,
+die die konkrete Ausprägung der Beziehung beschreiben:
+
+\begin{itemize}
+    \item Beginn des Abonnements (Startdatum)
+    \item Ende des Abonnements (Enddatum)
+    \item Zahlungszyklus (Enum: monatlich oder jährlich)
+\end{itemize}
+
+Diese Attribute gehören semantisch weder ausschließlich zum Benutzer noch
+ausschließlich zum Anbieter, sondern definieren die konkrete Vertragsbeziehung
+zwischen beiden Entitäten. Die Modellierung über eine separate Relationstabelle
+ermöglicht somit eine fachlich korrekte Abbildung der Geschäftslogik, die
+Erweiterbarkeit um weitere beziehungsbezogene Attribute -- etwa Preis, Rabatt
+oder Kündigungsstatus -- sowie eine klare Trennung der Verantwortlichkeiten
+innerhalb des Datenmodells. Gerade an dieser Stelle wird deutlich, dass
+relationale Datenbanken ihre Stärke bei strukturierten und stark
+beziehungsorientierten Datenmodellen ausspielen.
+
+
+\subsection{Reflexion der anfänglichen Modellierungsentscheidung}
+
+Rückblickend stellt sich die anfängliche Entscheidung, Anbieter als
+\texttt{Set<String>} direkt innerhalb der User-Entität zu speichern, als
+struktureller Fehler heraus. Diese vereinfachte Modellierung war zwar für einen
+ersten Prototyp funktional ausreichend, führte jedoch zu mehreren konzeptionellen
+Einschränkungen:
+
+\begin{enumerate}
+    \item Es konnten keine anbieterspezifischen Metadaten gespeichert werden
+    (z.\,B. Website, Kategorie oder Beschreibung).
+    \item Die konkrete Ausgestaltung der Beziehung -- Startdatum, Zahlungszyklus
+    etc. -- war nicht modellierbar.
+    \item Eine konsistente Datenhaltung war nicht gewährleistet, da String-Werte
+    fehleranfällig und nicht referenziell abgesichert sind.
+    \item Erweiterungen des Systems hätten tiefgreifende strukturelle Änderungen
+    erfordert.
+\end{enumerate}
+
+Insbesondere der Umstand, dass beziehungsrelevante Informationen nicht abgebildet
+werden konnten, verdeutlicht die Problematik dieser frühen Designentscheidung.
+Die Speicherung als String-Set widersprach den Grundprinzipien der Normalisierung
+und verhinderte eine skalierbare Weiterentwicklung des Systems. Erst durch die
+Einführung einer eigenständigen \texttt{Provider}-Entität sowie einer
+Relationstabelle konnte das Datenmodell den fachlichen Anforderungen der
+Applikation gerecht werden. Diese Umstrukturierung stellt einen wesentlichen
+architektonischen Reifeprozess im Projektverlauf dar.

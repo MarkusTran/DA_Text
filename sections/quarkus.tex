@@ -1,0 +1,575 @@
+
+\lstdefinelanguage{json}{
+    basicstyle=\ttfamily\small,
+    showstringspaces=false,
+    breaklines=true,
+    frame=single,
+    backgroundcolor=\color{gray!10}
+}
+
+\lstset{
+    language=java,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue},
+    stringstyle=\color{orange},
+    commentstyle=\color{gray},
+    showstringspaces=false,
+    breaklines=true,
+    frame=single,
+    backgroundcolor=\color{gray!10}
+}
+
+\section{Quarkus – Grundlagen und Einsatz in der Anwendung}
+\setauthor{Markus Tran}
+
+Quarkus ist ein modernes, quelloffenes Java-Framework, das speziell für den Einsatz 
+in containerisierten und Cloud-nativen Umgebungen entwickelt wurde. Ziel des Frameworks 
+ist es, den Prozess der Bereitstellung von Java-Applikationen in Cloud-Umgebungen zu 
+vereinfachen und zu optimieren. Dabei unterstützt Quarkus Entwicklerinnen und Entwickler 
+dabei, Applikationen auch ohne tiefgehende Kenntnisse der zugrundeliegenden Infrastruktur 
+bereitzustellen.
+
+Ein wesentliches Merkmal von Quarkus ist seine Kompatibilität mit einer Vielzahl 
+etablierter Frameworks und Standards. Dazu zählen unter anderem Eclipse MicroProfile, 
+RESTEasy (JAX-RS), Hibernate ORM (JPA), Apache Kafka sowie Spring. Diese breite 
+Unterstützung ermöglicht es, bestehende Kenntnisse und Bibliotheken direkt einzusetzen, 
+ohne grundlegende Umstrukturierungen vornehmen zu müssen.
+
+Quarkus hebt sich durch seine Leichtgewichtigkeit von anderen Java-Frameworks ab. 
+Konkret äußert sich dies in einer geringen Startzeit, einem niedrigen Speicherverbrauch 
+sowie der einfachen Möglichkeit, Projekte in Cloud-Umgebungen bereitzustellen.
+
+
+\section{Grundprinzip von Quarkus}
+\setauthor{Markus Tran}
+
+Ein zentrales Merkmal von Quarkus liegt in der Art, wie Java-Anwendungen kompiliert 
+und ausgeführt werden. Um dies zu verstehen, ist es notwendig, die zwei grundlegenden 
+Kompilierungsansätze zu unterscheiden: die Just-In-Time-Kompilierung (JIT) und die 
+Ahead-of-Time-Kompilierung (AOT).
+
+\subsection{Just-In-Time-Kompilierung (JIT)}
+
+Im klassischen Java-Ausführungsmodell wird Quellcode zunächst vom Java-Compiler in 
+plattformunabhängigen Bytecode übersetzt. Dieser Bytecode wird anschließend von der 
+Java Virtual Machine (JVM) interpretiert. Die JIT-Kompilierung ist dabei ein 
+Optimierungsmechanismus der JVM: Häufig ausgeführte Codeabschnitte werden zur Laufzeit 
+in nativen Maschinencode übersetzt, was die Ausführungsgeschwindigkeit erhöht.
+
+Der Nachteil dieses Ansatzes liegt darin, dass die JVM beim Start der Applikation 
+zunächst hochgefahren werden muss und die JIT-Optimierungen erst schrittweise während 
+der Laufzeit greifen. Dies führt zu längeren Startzeiten und einem erhöhten 
+Speicherverbrauch – Faktoren, die in containerisierten Umgebungen mit häufigen 
+Neustarts besonders nachteilig sind.
+
+\subsection{Ahead-of-Time-Kompilierung (AOT)}
+
+Die Ahead-of-Time-Kompilierung verfolgt einen grundlegend anderen Ansatz: Der gesamte 
+Anwendungscode wird bereits vor der Ausführung, also zum Zeitpunkt des Build-Prozesses, 
+in nativen Maschinencode übersetzt. Quarkus nutzt hierfür GraalVM Native Image, ein 
+Werkzeug, das Java-Anwendungen in plattformspezifische, ausführbare Binärdateien 
+kompiliert.
+
+Das Ergebnis ist eine native ausführbare Datei, die ohne eine laufende JVM auskommt. 
+Dies hat folgende Vorteile:
+
+\begin{itemize}
+    \item \textbf{Schnelle Startzeit:} Da keine JVM initialisiert werden muss und alle 
+    Optimierungen bereits zur Build-Zeit vorgenommen wurden, startet die Anwendung 
+    in Millisekunden.
+    \item \textbf{Geringer Speicherverbrauch:} Der Wegfall der JVM-Laufzeitumgebung 
+    reduziert den RAM-Bedarf erheblich.
+    \item \textbf{Eignung für containerisierte Umgebungen:} Kurze Startzeiten und 
+    geringer Ressourcenverbrauch machen AOT-kompilierte Anwendungen besonders 
+    geeignet für Kubernetes und ähnliche Plattformen.
+\end{itemize}
+
+Als Nachteil ist die deutlich längere Build-Zeit im Vergleich zur JIT-Kompilierung 
+zu nennen, da die gesamte Kompilierung und Optimierung vorab stattfindet.
+
+\subsection{Hot Reload}
+
+Für den Entwicklungsprozess bietet Quarkus einen sogenannten Hot-Reload-Mechanismus, 
+bekannt als \textit{Quarkus Dev Mode}. Dabei werden Änderungen am Quellcode automatisch 
+erkannt und ohne Neustart der Anwendung übernommen. Dies beschleunigt den 
+Entwicklungszyklus erheblich, da zeitaufwändige Neustarts entfallen. Der Dev Mode 
+verwendet intern JIT-Kompilierung, um diese schnelle Rückkopplungsschleife zu 
+ermöglichen – die AOT-Kompilierung wird lediglich für den finalen Build eingesetzt.
+
+
+\section{Quarkus in der vorliegenden Applikation}
+\setauthor{Markus Tran}
+
+Quarkus wird in der vorliegenden Anwendung als Hauptframework für das Backend verwendet. 
+Für die Datenbankanbindung kommt Hibernate ORM mit Panache zum Einsatz, das eine 
+vereinfachte Abstraktion des JPA-Standards bietet und den Datenbankzugriff mit weniger 
+Boilerplate-Code ermöglicht.
+
+Die Anwendung wird mittels AOT-Kompilierung als native ausführbare Datei gebaut. 
+Obwohl die Build-Zeit dadurch im Vergleich zur klassischen JIT-Kompilierung länger 
+ausfällt, überwiegen die Vorteile im Betrieb: Die Applikation weist eine deutlich 
+verkürzte Startzeit auf, benötigt weniger Arbeitsspeicher und ist optimal für den 
+Einsatz in einer containerisierten Umgebung geeignet. Diese Eigenschaften sind 
+insbesondere in Cloud-Deployments von Vorteil, wo Ressourceneffizienz und 
+Skalierbarkeit zentrale Anforderungen darstellen.
+\section{Backend-Architektur}
+\setauthor{Markus Tran}
+
+Die Backend-Architektur der vorliegenden Anwendung folgt einem mehrschichtigen Aufbau,
+der eine klare Trennung der Verantwortlichkeiten gewährleistet. Dieses Architekturmuster
+wird auch als \textit{Layered Architecture} bezeichnet. Jede Schicht übernimmt eine
+klar definierte Aufgabe, wodurch die Wartbarkeit, Testbarkeit und Erweiterbarkeit
+der Anwendung verbessert wird. Eine eingehende HTTP-Anfrage durchläuft dabei die
+Resource-Schicht, wird über DTOs weitergeleitet, von der Service-Schicht verarbeitet
+und schließlich über das Repository auf die Datenbankentitäten abgebildet.
+
+\subsection{Entity}
+
+Die Entity-Schicht repräsentiert die Datenmodelle einer Anwendung. Jede Entity-Klasse
+bildet die Struktur einer Datenbanktabelle ab und wird mithilfe von Annotationen der
+Jakarta Persistence API (JPA) mit der Datenbank verknüpft. Entity-Klassen enthalten
+ausschließlich die Datenbankstruktur sowie einfache Zugriffsmethoden. Geschäftslogik
+hat in dieser Schicht keine Berechtigung, da dies die Trennung der Verantwortlichkeiten
+verletzen würde.
+
+\subsection{Repository}
+
+Die Repository-Schicht kapselt den Zugriff auf die Datenbank und stellt eine
+Abstraktion zwischen der Datenzugriffslogik und den darüberliegenden Schichten dar.
+Sie definiert die grundlegenden CRUD-Operationen (Create, Read, Update, Delete) sowie
+komplexere Datenbankabfragen. Durch diese Trennung bleibt die Geschäftslogik
+unabhängig von der konkreten Datenbankimplementierung, was einen späteren Austausch
+der Persistenzschicht erleichtert und die Testbarkeit der Anwendung erhöht.
+
+\subsection{Service}
+
+Die Service-Schicht beinhaltet die Geschäftslogik der Anwendung und fungiert als
+Vermittler zwischen der Resource- und der Repository-Schicht. Sie ist verantwortlich
+für die Verarbeitung und Transformation von Daten, die Koordination mehrerer
+Repository-Zugriffe sowie die Kommunikation mit externen Systemen. Die Service-Schicht
+stellt sicher, dass die Geschäftsregeln der Anwendung zentral und unabhängig von
+der Präsentations- oder Datenzugriffsschicht definiert sind.
+
+\subsection{Resource}
+
+Die Resource-Schicht ist für die Bereitstellung der RESTful-Endpunkte verantwortlich.
+Sie nimmt eingehende HTTP-Anfragen entgegen, delegiert die Verarbeitung an die
+zuständigen Service-Klassen und gibt die entsprechenden Antworten an den Client zurück.
+Die Resource-Schicht enthält dabei selbst keine Geschäftslogik, sondern fungiert
+ausschließlich als Schnittstelle zwischen dem Backend und den konsumierenden Clients.
+Durch diese strikte Trennung bleibt die Schicht schlank und leicht austauschbar.
+
+\subsection{DTO -- Data Transfer Objects}
+
+Data Transfer Objects (DTOs) sind speziell zugeschnittene Datenobjekte, die dem
+gezielten Datenaustausch zwischen verschiedenen Schichten oder zwischen Backend und
+Client dienen. Anstatt vollständige Entity-Objekte oder rohe API-Antworten direkt
+weiterzugeben, werden DTOs verwendet, die ausschließlich jene Felder enthalten,
+die für den jeweiligen Anwendungsfall erforderlich sind.
+
+DTOs erfüllen dabei zwei wesentliche Zwecke. Erstens erhöhen sie die Sicherheit
+der Anwendung: Sensible Felder einer Entity -- wie etwa Passwort-Hashes oder
+interne Systemfelder -- werden nicht versehentlich nach außen weitergegeben.
+Zweitens wird eine Entkopplung zwischen der internen Datenstruktur und der nach
+außen sichtbaren API-Struktur erreicht. Änderungen am Datenbankmodell oder an
+einer externen API haben dadurch keinen direkten Einfluss auf die eigene
+Schnittstelle.
+
+\subsubsection*{Motivation am konkreten Beispiel: TMDB API}
+
+Um den praktischen Nutzen eines DTOs zu veranschaulichen, eignet sich der
+Vergleich zwischen der rohen Antwort der TMDB API und dem in der vorliegenden
+Anwendung verwendeten \texttt{TrendingMovieDTO}.
+
+Ein einzelnes Filmobjekt aus der TMDB-Antwort des Endpunkts
+\texttt{/trending/movie/\{timewindow\}} enthält unter anderem folgende Felder:
+
+\begin{lstlisting}[language=json, caption={Auszug einer TMDB API-Antwort für einen Film}]
+{
+  "backdrop_path": "/avedvodAZUcwqevBfm8p4G2NziQ.jpg",
+  "id": 933260,
+  "title": "The Substance",
+  "original_title": "The Substance",
+  "overview": "A fading celebrity ...",
+  "poster_path": "/lqoMzCcZYEFK729d6qzt349fB4o.jpg",
+  "media_type": "movie",
+  "adult": false,
+  "original_language": "en",
+  "genre_ids": [27, 878],
+  "popularity": 4743.21,
+  "release_date": "2024-09-07",
+  "video": false,
+  "vote_average": 7.1,
+  "vote_count": 3890
+}
+\end{lstlisting}
+
+Die TMDB API liefert pro Film 14 Felder zurück, von denen für die vorliegende
+Anwendung jedoch nur ein Teil relevant ist. Felder wie \texttt{backdrop\_path},
+\texttt{adult}, \texttt{original\_language}, \texttt{genre\_ids},
+\texttt{media\_type} oder \texttt{video} werden in der Anwendung nicht benötigt
+und würden bei einer ungefilterten Weitergabe an den Client unnötig Bandbreite
+verbrauchen und die Antwortstruktur verkomplizieren.
+
+Stattdessen wird die Rohantwort im \texttt{TmdbService} verarbeitet und auf den
+\texttt{TrendingMovieDTO} abgebildet, der ausschließlich die relevanten Felder
+enthält:
+
+\begin{lstlisting}[language=java, caption={TrendingMovieDTO als Java Record}]
+public record TrendingMovieDTO(
+    Long id,
+    String title,
+    String poster,
+    String overview,
+    double popularity,
+    LocalDate releaseDate,
+    double voteAverage,
+    double voteCount
+) {}
+\end{lstlisting}
+
+Der resultierende DTO enthält lediglich 8 statt 14 Felder. Darüber hinaus wird
+das Feld \texttt{poster\_path} -- das in der TMDB-Antwort nur einen relativen
+Pfad wie \texttt{/lqoMzCcZYEFK729d6qzt349fB4o.jpg} enthält -- bereits im
+Service zu einer vollständigen URL zusammengesetzt:
+
+\begin{lstlisting}[language=java, caption={Zusammensetzung der Poster-URL im TmdbService}]
+String poster = "https://image.tmdb.org/t/p/w92"
+    + movie.path("poster_path").asText(null);
+\end{lstlisting}
+
+Der Client erhält damit eine direkt verwendbare URL, ohne selbst Kenntnisse über
+die Bildpfad-Konvention der TMDB API besitzen zu müssen. Dies ist ein weiterer
+Vorteil des DTO-Patterns: Die Komplexität der externen API wird im Backend
+gekapselt und dem Client eine saubere, konsistente Schnittstelle präsentiert.
+
+
+%----------------------------------------------------------
+\section{Implementierung des Backends in der vorliegenden Applikation}
+\setauthor{Markus Tran}
+
+Die im vorherigen Abschnitt beschriebenen Architekturprinzipien wurden in der
+vorliegenden Anwendung konsequent umgesetzt. Das Backend basiert auf Quarkus und
+verwendet Hibernate ORM für die Datenbankanbindung. Die folgende Beschreibung
+erläutert, wie die einzelnen Schichten konkret implementiert wurden.
+
+\subsection{Entity}
+
+Die Datenbankstruktur der Anwendung wird durch fünf Entity-Klassen sowie ein
+Enum abgebildet, die gemeinsam das Domänenmodell der Anwendung repräsentieren.
+
+Die zentrale Entität ist \texttt{UserMovieDB}, welche einen registrierten Benutzer
+der Anwendung darstellt. Als Primärschlüssel wird dabei keine automatisch generierte
+Datenbank-ID verwendet, sondern die \texttt{UUID} des Benutzers aus dem
+Identity-Provider Keycloak. Dies stellt sicher, dass die interne
+Benutzerrepräsentation direkt mit dem Authentifizierungssystem verknüpft ist.
+
+Die Entität \texttt{Provider} repräsentiert einen Streaming-Anbieter wie etwa
+Netflix oder Amazon Prime. Neben einer internen Datenbank-ID speichert sie die
+\texttt{tmdbProviderId}, also die eindeutige ID des Anbieters in der TMDB API.
+Diese dient als Brücke zwischen den intern gespeicherten Providern und den von
+der externen API gelieferten Daten. Jedem Provider kann zusätzlich eine Liste
+von \texttt{CountryPriority}-Einträgen zugeordnet werden, die die Anzeigepriorität
+des Anbieters je nach Land abbilden.
+
+Die Verknüpfung zwischen Benutzer und Streaming-Anbieter erfolgt über die
+Entität \texttt{UserProviderSubscription}. Diese speichert neben den
+Fremdschlüsseln auf \texttt{UserMovieDB} und \texttt{Provider} auch den
+Abrechnungszyklus des Abonnements sowie das letzte Abrechnungsdatum. Der
+Abrechnungszyklus wird über das Enum \texttt{BillingCycle} mit den
+Ausprägungen \texttt{MONTHLY} und \texttt{YEARLY} abgebildet. Eine eindeutige
+Kombination aus Benutzer und Anbieter wird durch eine
+\texttt{UniqueConstraint}-Annotation auf Datenbankebene sichergestellt, sodass
+ein Benutzer denselben Anbieter nicht mehrfach abonnieren kann. Die Entität
+stellt zudem eine berechnete Methode \texttt{getNextBillingDate()} bereit, die
+basierend auf dem Abrechnungszyklus das nächste Fälligkeitsdatum ermittelt.
+
+Die Entität \texttt{History} speichert den Filmschauerverlauf eines Benutzers.
+Sie referenziert den jeweiligen Benutzer über einen Fremdschlüssel sowie die
+\texttt{tmdbMovieId} des gesehenen Films. Der Zeitpunkt des Ansehens wird
+automatisch beim Erstellen eines \texttt{History}-Eintrags auf den aktuellen
+Zeitstempel gesetzt.
+
+\subsection{Repository}
+
+Die Repository-Schicht der Anwendung besteht aus drei Klassen, die jeweils
+den Datenbankzugriff für eine bestimmte Entität kapseln.
+
+Das \texttt{UserMovieDBRepository} implementiert das \texttt{PanacheRepository}-
+Interface und stellt spezialisierte Abfragemethoden bereit. Die Methode
+\texttt{findByUUID} sucht einen Benutzer anhand seiner Keycloak-UUID und gibt
+ein \texttt{Optional} zurück, um den Fall eines nicht vorhandenen Benutzers
+typsicher zu behandeln. Die Methode \texttt{getUserProviderTmdbIds} liefert
+alle TMDB-Provider-IDs der Abonnements eines bestimmten Benutzers als
+\texttt{Set}, das anschließend im Service-Layer für den Abgleich mit der
+TMDB API verwendet wird. Besonders hervorzuheben ist die Methode
+\texttt{getProvidersWithOwnership}, die mithilfe einer JPQL-Abfrage alle
+Provider aus der Datenbank lädt und dabei über einen \texttt{LEFT JOIN} mit
+den Abonnements des Benutzers verknüpft. Das Ergebnis enthält für jeden
+Provider ein Flag, das angibt, ob der Benutzer diesen abonniert hat. Dadurch
+kann das Frontend mit einem einzigen Request alle relevanten Informationen
+abrufen. Darüber hinaus enthält das Repository die Methode
+\texttt{updateSubscriptions}, die die Abonnements eines Benutzers anhand
+einer übergebenen Liste von \texttt{SubscriptionUpdateDTO}-Objekten
+aktualisiert. Dabei werden neue Abonnements angelegt, bestehende
+aktualisiert und nicht mehr enthaltene entfernt.
+
+Das \texttt{ProviderRepository} verwaltet die Streaming-Anbieter in der
+Datenbank. Die zentrale Methode ist \texttt{upsertFromTmdb}, die beim
+Anwendungsstart aufgerufen wird: Sie prüft, ob ein Provider mit der
+gegebenen \texttt{tmdbProviderId} bereits existiert, und aktualisiert
+dessen Daten oder legt einen neuen Eintrag an. Dadurch wird eine konsistente
+Synchronisierung der Provider-Daten mit der TMDB API gewährleistet.
+
+Das \texttt{HistoryRepository} implementiert ebenfalls das
+\texttt{PanacheRepository}-Interface und stellt Methoden für den Zugriff
+auf den Filmschauerverlauf bereit. Die Methode \texttt{findByUserId} gibt
+alle History-Einträge eines Benutzers sortiert nach dem Zeitpunkt des
+Ansehens zurück. Über \texttt{findByUserIdLimit} kann die Anzahl der
+zurückgegebenen Einträge begrenzt werden, was eine einfache Paginierung
+ermöglicht. Die Methode \texttt{hasWatchedMovie} prüft, ob ein Benutzer
+einen bestimmten Film bereits gesehen hat.
+
+\subsection{Service}
+
+Die Service-Schicht der Anwendung besteht aus drei Klassen, die jeweils
+einen klar abgegrenzten Verantwortungsbereich abdecken.
+
+Der \texttt{UserService} ist für die Verwaltung des aktuell authentifizierten
+Benutzers zuständig. Er liest die Keycloak-UUID aus dem JWT-Token aus und
+prüft über das \texttt{UserMovieDBRepository}, ob der Benutzer bereits in
+der Datenbank existiert. Ist dies nicht der Fall, wird automatisch ein neuer
+\texttt{UserMovieDB}-Eintrag angelegt. Dieses Muster wird als
+\textit{Lazy User Creation} bezeichnet und stellt sicher, dass beim ersten
+authentifizierten Zugriff eines neuen Benutzers automatisch ein
+Datenbankprofil erstellt wird, ohne dass eine explizite Registrierung
+erforderlich ist.
+
+Der \texttt{TmdbService} kapselt die gesamte Kommunikation mit der externen
+TMDB API. Die HTTP-Anfragen werden über die Bibliothek OkHttp durchgeführt,
+die empfangenen JSON-Antworten mit Jackson geparst und auf DTOs abgebildet.
+Der API-Schlüssel wird nicht im Quellcode hinterlegt, sondern über den
+Quarkus-Konfigurationsmechanismus mittels \texttt{@ConfigProperty} injiziert,
+was die Sicherheit der Anwendung erhöht. Der Service stellt Methoden zum
+Abrufen von Filminformationen per ID oder Suchbegriff, zum Laden verfügbarer
+Streaming-Anbieter sowie zum Abrufen trendender Filme bereit. Die Methode
+\texttt{getFilteredProvidersForUser} kombiniert dabei externe API-Daten mit
+internen Datenbankdaten: Sie ruft die verfügbaren Provider eines Films von
+der TMDB API ab, gleicht diese mit den vom Benutzer abonnierten Anbietern
+aus der Datenbank ab und setzt das Flag \texttt{ownedByUser} im
+zurückgegebenen \texttt{ProviderInfoDTO}. Die Ergebnisliste wird abschließend
+so sortiert, dass die vom Benutzer abonnierten Anbieter an erster Stelle
+erscheinen.
+
+Der \texttt{ProviderSyncService} wird beim Start der Anwendung automatisch
+ausgeführt, indem er auf das Quarkus-Lifecycle-Event \texttt{StartupEvent}
+reagiert. Er ruft über den \texttt{TmdbService} alle verfügbaren
+Streaming-Anbieter von der TMDB API ab und synchronisiert diese über die
+\texttt{upsertFromTmdb}-Methode des \texttt{ProviderRepository} in die
+lokale Datenbank. Dadurch ist sichergestellt, dass die Anwendung stets eine
+aktuelle Liste aller Provider vorhält, ohne dass ein manueller
+Synchronisierungsschritt erforderlich ist. Der gesamte Vorgang wird in einer
+Transaktion ausgeführt, was durch die \texttt{@Transactional}-Annotation
+sichergestellt wird.
+
+\subsection{Resource}
+
+Die Resource-Schicht der Anwendung besteht aus drei produktiven
+Resource-Klassen, die die REST-Endpunkte des Backends definieren.
+
+Die \texttt{MovieResource} stellt Endpunkte unter dem Basispfad
+\texttt{/api/movies} bereit. Sie ermöglicht das Abrufen von Filmdaten anhand
+einer ID oder eines Suchbegriffs, das Laden verfügbarer Streaming-Anbieter
+für einen Film sowie das Abrufen trendender Filme. Einige Endpunkte sind
+öffentlich zugänglich und mit \texttt{@PermitAll} annotiert, während der
+Endpunkt \texttt{/api/movies/\{id\}/providers/for-user} eine gültige
+Authentifizierung erfordert und über \texttt{@RolesAllowed} auf die Rollen
+\texttt{user} und \texttt{medien-abo-users-role} beschränkt ist. Bei diesem
+Endpunkt wird die Benutzer-ID direkt aus dem JWT-Token extrahiert, sodass
+keine User-ID in der URL übermittelt werden muss.
+
+Die \texttt{UserResource} stellt Endpunkte unter dem Basispfad
+\texttt{/api/users} bereit und ist vollständig authentifizierungsgeschützt.
+Sie bietet Funktionalitäten zur Verwaltung des eigenen Benutzerprofils, der
+Streaming-Abonnements sowie der Filmschauhistorie. Über
+\texttt{GET /api/users/me} kann der aktuelle Benutzer seine Profildaten
+abrufen, wobei bei einem erstmaligen Zugriff automatisch ein Datenbankprofil
+angelegt wird. Der Endpunkt \texttt{PUT /api/users/me/subscriptions} ermöglicht das vollständige Aktualisieren der Abonnements in einem einzigen
+Request. Die History-Endpunkte erlauben das Hinzufügen, Abrufen und Löschen
+von Einträgen im Filmschauerverlauf. Beim Löschen wird explizit geprüft, ob
+der Eintrag dem authentifizierten Benutzer gehört, bevor die Operation
+ausgeführt wird.
+
+Die \texttt{ProviderRessource} stellt Endpunkte unter \texttt{/api/providers}
+bereit. Sie ermöglicht das Abrufen aller in der Datenbank gespeicherten
+Streaming-Anbieter sowie das manuelle Auslösen einer Synchronisierung mit
+der TMDB API über den Endpunkt \texttt{GET /api/providers/sync}.
+
+\subsection{DTO -- Data Transfer Objects}
+
+In der vorliegenden Anwendung werden DTOs konsequent eingesetzt, um die
+Kommunikation zwischen den Schichten zu strukturieren und interne
+Datenbankstrukturen zu kapseln.
+
+Der \texttt{ProviderInfoDTO} wird bei der Abfrage von Streaming-Anbietern
+eines Films verwendet. Er enthält die TMDB-Provider-ID, den Anbieternamen,
+die URL des Provider-Logos sowie das Flag \texttt{ownedByUser}, das angibt,
+ob der jeweilige Benutzer diesen Anbieter abonniert hat. Die vollständige
+\texttt{Provider}-Entity sowie interne Datenbankfelder werden dabei nicht
+weitergegeben.
+
+Der \texttt{ProviderWithOwnership}-DTO wird vom \texttt{UserMovieDBRepository}
+direkt über eine JPQL-Konstruktorabfrage befüllt und an den Client
+übermittelt. Er enthält neben den Provider-Stammdaten auch den
+Abrechnungszyklus und das letzte Abrechnungsdatum des Abonnements, sofern
+der Benutzer den jeweiligen Anbieter abonniert hat.
+
+Der \texttt{SubscriptionUpdateDTO} dient als Eingabe-DTO für den
+\texttt{PUT /api/users/me/subscriptions}-Endpunkt. Er enthält die
+TMDB-Provider-ID, den gewünschten Abrechnungszyklus sowie das
+Abrechnungsdatum und ermöglicht so die vollständige Aktualisierung eines
+Abonnements in einem einzigen Objekt.
+
+Der \texttt{TrendingMovieDTO} bündelt alle relevanten Informationen eines
+trendenden Films -- Titel, Poster-URL, Kurzbeschreibung, Erscheinungsdatum,
+Popularitätswert sowie Bewertungsdurchschnitt und Bewertungsanzahl -- in
+einem kompakten Objekt, das direkt an den Client übermittelt wird.
+
+Der \texttt{HistoryDTO} dient der strukturierten Rückgabe von
+History-Einträgen an den Client. Er wird über eine statische
+\texttt{from(History)}-Methode aus der gleichnamigen Entity erstellt und
+stellt sicher, dass keine internen JPA-Proxies oder lazy-geladenen
+Assoziationen versehentlich serialisiert werden.
+
+Der \texttt{ProviderApi}-Record dient als internes Transferobjekt zwischen
+dem \texttt{TmdbService} und dem \texttt{ProviderSyncService}. Er bildet
+die Struktur der TMDB-API-Antwort ab und ermöglicht eine typsichere
+Weiterverarbeitung der Rohdaten, bevor diese in die Datenbank geschrieben
+werden.
+
+\section{Datenbankkonzept und architektonische Entscheidungen}
+\setauthor{Markus Tran}
+
+Für das Backend der Anwendung spielt die Wahl der geeigneten Datenbanktechnologie
+eine zentrale Rolle. Trotz vorhandener Kenntnisse im Bereich nicht-relationaler
+Datenbanken (NoSQL) -- wie etwa MongoDB oder Vektordatenbanken -- wurde im Rahmen
+dieses Projekts bewusst eine relationale Datenbank eingesetzt.
+
+Die Entscheidung für ein relationales Datenbanksystem basiert auf mehreren Faktoren.
+Die Anwendung weist eine klar strukturierte und logisch getrennte Datenarchitektur
+auf, wodurch sich die Daten und deren Beziehungen gut in einem relationalen Modell
+abbilden lassen. Entitäten und ihre Relationen konnten somit eindeutig definiert
+und konsistent strukturiert werden. Dieses Vorgehen entspricht dem etablierten
+Standard bei Anwendungen mit stark strukturierten Daten und klar definierten
+Geschäftsprozessen.
+
+Ein weiterer wesentlicher Aspekt ist die Skalierbarkeit des Projekts. Relationale
+Datenbanken bieten durch Normalisierung, Transaktionssicherheit (ACID-Prinzip) und
+klar definierte Beziehungen eine stabile Grundlage für zukünftige Erweiterungen.
+Voraussetzung für eine nachhaltige Skalierbarkeit ist jedoch eine sorgfältig
+durchdachte Datenbankstruktur. Eine frühzeitig geplante und konsistente Modellierung
+-- beispielsweise durch ein Entity-Relationship-Diagramm (ERD) -- ist essenziell,
+um spätere strukturelle Anpassungen zu minimieren.
+
+
+\subsection{Herausforderungen im Entwicklungsprozess}
+
+Im Verlauf der Diplomarbeit traten mehrere strukturelle Herausforderungen auf, die
+im Sinne einer transparenten Dokumentation offen dargestellt werden sollen.
+
+Zu Beginn der Implementierungsphase wurde ohne vollständig ausgearbeitetes
+Gesamtkonzept mit der Programmierung begonnen. Das Entity-Relationship-Diagramm
+wurde parallel zur Entwicklung erstellt, wodurch sich die Datenbankstruktur
+dynamisch entwickelte. Dieses iterative Vorgehen führte zwar zu schneller
+praktischer Umsetzung, hatte jedoch den Nachteil, dass strukturelle Änderungen
+im Nachhinein größeren Anpassungsaufwand verursachten.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\textwidth]{pics/erd_v1}
+    \caption{Erstes Entity-Relationship-Diagramm der Anwendung}
+    \label{fig:erd_v1}
+\end{figure}
+
+Eine weitere wesentliche Herausforderung ergab sich durch die späte Integration
+von Keycloak als Identity- und Access-Management-Lösung. Ursprünglich war die
+Benutzerverwaltung eigenständig implementiert worden. Durch die nachträgliche
+Einführung von Keycloak mussten die bestehenden User-Strukturen grundlegend
+überarbeitet werden. Dies hatte zur Folge, dass die Benutzerentitäten angepasst
+werden mussten, die Authentifizierungs- und Autorisierungslogik neu strukturiert
+wurde sowie abhängige Klassen und Beziehungen refaktoriert und teilweise neu
+implementiert werden mussten. Diese Umstellung führte zu zusätzlichem
+Entwicklungsaufwand, zeigte jedoch zugleich die Bedeutung einer frühzeitigen
+Architekturentscheidung -- insbesondere im Bereich der Sicherheits- und
+Authentifizierungsmechanismen.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\textwidth]{pics/erd_v2}
+    \caption{Überarbeitetes Entity-Relationship-Diagramm nach Integration von Keycloak}
+    \label{fig:erd_v2}
+\end{figure}
+
+
+\subsection{Modellierung der Many-to-Many-Beziehung und strukturelle Weiterentwicklung}
+
+Im weiteren Verlauf der Systemarchitektur zeigte sich deutlich der Mehrwert einer
+sauberen relationalen Modellierung, insbesondere bei der Abbildung von
+Many-to-Many-Beziehungen.
+
+Im Kontext der vorliegenden Applikation -- einem Mediatheken-Abonnement-Manager --
+besteht zwischen den Entitäten \textit{User} und \textit{Provider} keine einfache
+1:n-Beziehung, sondern eine n:m-Beziehung. Ein Benutzer kann mehrere Anbieter
+abonnieren, während ein Anbieter von mehreren Benutzern genutzt werden kann.
+
+Die Einführung einer eigenständigen Relationstabelle (\texttt{UserProviderSubscription})
+dient hierbei nicht ausschließlich der technischen Verknüpfung zweier Fremdschlüssel.
+Vielmehr übernimmt diese Tabelle eine fachlich zentrale Rolle innerhalb des
+Domänenmodells. In der Relationstabelle werden zusätzliche Attribute gespeichert,
+die die konkrete Ausprägung der Beziehung beschreiben:
+
+\begin{itemize}
+    \item Beginn des Abonnements (Startdatum)
+    \item Ende des Abonnements (Enddatum)
+    \item Zahlungszyklus (Enum: monatlich oder jährlich)
+\end{itemize}
+
+Diese Attribute gehören semantisch weder ausschließlich zum Benutzer noch
+ausschließlich zum Anbieter, sondern definieren die konkrete Vertragsbeziehung
+zwischen beiden Entitäten. Die Modellierung über eine separate Relationstabelle
+ermöglicht somit eine fachlich korrekte Abbildung der Geschäftslogik, die
+Erweiterbarkeit um weitere beziehungsbezogene Attribute -- etwa Preis, Rabatt
+oder Kündigungsstatus -- sowie eine klare Trennung der Verantwortlichkeiten
+innerhalb des Datenmodells. Gerade an dieser Stelle wird deutlich, dass
+relationale Datenbanken ihre Stärke bei strukturierten und stark
+beziehungsorientierten Datenmodellen ausspielen.
+
+
+\subsection{Reflexion der anfänglichen Modellierungsentscheidung}
+
+Rückblickend stellt sich die anfängliche Entscheidung, Anbieter als
+\texttt{Set<String>} direkt innerhalb der User-Entität zu speichern, als
+struktureller Fehler heraus. Diese vereinfachte Modellierung war zwar für einen
+ersten Prototyp funktional ausreichend, führte jedoch zu mehreren konzeptionellen
+Einschränkungen:
+
+\begin{enumerate}
+    \item Es konnten keine anbieterspezifischen Metadaten gespeichert werden
+    (z.\,B. Website, Kategorie oder Beschreibung).
+    \item Die konkrete Ausgestaltung der Beziehung -- Startdatum, Zahlungszyklus
+    etc. -- war nicht modellierbar.
+    \item Eine konsistente Datenhaltung war nicht gewährleistet, da String-Werte
+    fehleranfällig und nicht referenziell abgesichert sind.
+    \item Erweiterungen des Systems hätten tiefgreifende strukturelle Änderungen
+    erfordert.
+\end{enumerate}
+
+Insbesondere der Umstand, dass beziehungsrelevante Informationen nicht abgebildet
+werden konnten, verdeutlicht die Problematik dieser frühen Designentscheidung.
+Die Speicherung als String-Set widersprach den Grundprinzipien der Normalisierung
+und verhinderte eine skalierbare Weiterentwicklung des Systems. Erst durch die
+Einführung einer eigenständigen \texttt{Provider}-Entität sowie einer
+Relationstabelle konnte das Datenmodell den fachlichen Anforderungen der
+Applikation gerecht werden. Diese Umstrukturierung stellt einen wesentlichen
+architektonischen Reifeprozess im Projektverlauf dar.
+

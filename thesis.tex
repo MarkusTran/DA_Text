@@ -3,20 +3,35 @@
 \input{global-const.tex}
 \input{header}
 
+% -----------------------------------------------
+% PAKETE – müssen VOR \begin{document} stehen!
+% -----------------------------------------------
+\usepackage{listings}
+\usepackage{xcolor}
+
+\lstset{
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue},
+    stringstyle=\color{orange},
+    commentstyle=\color{gray},
+    showstringspaces=false,
+    breaklines=true,
+    frame=single,
+    backgroundcolor=\color{gray!10}
+}
+
 \makeatletter
 \def\bstctlcite{\@ifnextchar[{\@bstctlcite}{\@bstctlcite[@auxout]}}
 \def\@bstctlcite[#1]#2{\@bsphack
-	\@for\@citeb:=#2\do{%
-		\edef\@citeb{\expandafter\@firstofone\@citeb}%
-		\if@filesw\immediate\write\csname #1\endcsname{\string\citation{\@citeb}}\fi}%
-	\@esphack}
+    \@for\@citeb:=#2\do{%
+        \edef\@citeb{\expandafter\@firstofone\@citeb}%
+        \if@filesw\immediate\write\csname #1\endcsname{\string\citation{\@citeb}}\fi}%
+    \@esphack}
 \makeatother
-
 \clubpenalty=10000 
 \widowpenalty=10000
 \displaywidowpenalty=10000
 \interfootnotelinepenalty=10000
-
 \title{\thesistitle}
 \makeatletter
 \@ifundefined{fourthauthor}{
@@ -29,35 +44,30 @@
   \author{\firstauthor, \secondauthor, \thirdauthor, \fourthauthor}
 }
 \makeatother
-
 \makeindex
 \makeglossaries
+
 \begin{document}
+
 \bstctlcite{IEEEexample:BSTcontrol}
 \newcommand{\reminder}[1]
 { \textcolor{red}{<[{\bf\marginpar{\mbox{$<==$}} #1 }]>} }
 \newcommand{\icode}[1]{\lstinline$#1$}
-%\urlstyle{same}
-%\setstretch{1.5}
-\setstretch {1.433}
+\setstretch{1.433}
 \renewcommand{\arraystretch}{1.2}
-
 \includepdf{./titlepage/coversheet}
 \pagenumbering{Roman}
 \newpage
 \input{oath}
 \input{./sections/abstract}
-
 \pagestyle{plain}
-
 \IfStrEq{\thesislang}{de}
 {
-	\renewcommand{\lstlistlistingname}{Quellcodeverzeichnis}
+    \renewcommand{\lstlistlistingname}{Quellcodeverzeichnis}
 }
 {
  % keep at list of listing
 }
-
 \tableofcontents
 \newpage
 \setcounter{RPages}{\value{page}}
@@ -71,18 +81,17 @@
 \input{./sections/introduction}
 
 \begin{spacing}{1}
-\chapter{Umfeldanalyse}
+\chapter{Quarkus}\label{chapter:quarkus}     % <-- label geändert
 \end{spacing}
-\input{./sections/related_work}
+\input{./sections/quarkus}
 
 \begin{spacing}{1}
-\chapter{Quarkus}\label{chapter:tech}
+\chapter{Architektur}\label{chapter:architektur}  % <-- Titel + label geändert
 \end{spacing}
-\input{./sections/technologies}
-
+\input{./sections/architecture}
 
 \begin{spacing}{1}
-\chapter{Datenbank}\label{chapter:Datenbank}
+\chapter{Datenbank}\label{chapter:datenbank}
 \end{spacing}
 \input{./sections/datenbank}
 
@@ -100,22 +109,21 @@
 \pagenumbering{Roman}
 \setcounter{page}{\value{RPages}}
 \input{glossary}
-%\setlength{\glsdescwidth}{0.8\linewidth}
 \glsnogroupskiptrue
 \IfStrEq{\thesislang}{de}
 {
-	\printglossary[title=Glossar,toctitle=Glossar] %,style=long]
+    \printglossary[title=Glossar,toctitle=Glossar]
 }
 {
-	\printglossary[title=Glossary,toctitle=Glossary] %,style=long]
+    \printglossary[title=Glossary,toctitle=Glossary]
 }
 \spacing{1}{
 \IfStrEq{\thesislang}{de}
 {
-	\bibliographystyle{ieeetrande}
+    \bibliographystyle{ieeetrande}
 }
 {
-	\bibliographystyle{IEEEtran}
+    \bibliographystyle{IEEEtran}
 }
 \bibliography{bib}
 }
@@ -125,5 +133,5 @@
 \appendix
 \addchap{Anhang}
 \input{./sections/appendix}
-\end{document}
 
+\end{document}
