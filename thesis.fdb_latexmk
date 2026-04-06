@@ -1,19 +1,19 @@
 # Fdb version 4
-["bibtex thesis"] 1775060455.80171 "thesis.aux" "thesis.bbl" "thesis" 1775061145.20532 2
+["bibtex thesis"] 0 "thesis.aux" "thesis.bbl" "thesis" 1775503785.0257 -1
   "./bib.bib" 1769007115 806 72a5fd8d7662c934d85c456a5df18811 ""
   "./ieeetrande.bst" 1769007115 61980 fd293e0adca6cd19772e5be38250514f ""
-  "thesis.aux" 1775061144 28632 13cee73a50b7b676cbe09c854d9f959f "pdflatex"
+  "thesis.aux" 0 -1 0 "pdflatex"
   (generated)
   "thesis.bbl"
   "thesis.blg"
   (rewritten before read)
-["makeindex thesis.idx"] 1774898922.05617 "thesis.idx" "thesis.ind" "thesis" 1775061145.19602 2
-  "thesis.idx" 1775061143 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
+["makeindex thesis.idx"] 1775503784.85431 "thesis.idx" "thesis.ind" "thesis" 1775503785.018 2
+  "thesis.idx" 0 -1 0 "pdflatex"
   (generated)
   "thesis.ilg"
   "thesis.ind"
   (rewritten before read)
-["pdflatex"] 1775061142.35862 "c:/Users/Blaue/OneDrive/Documents/DA_Text/thesis.tex" "thesis.pdf" "thesis" 1775061145.19637 2
+["pdflatex"] 1775503781.79583 "c:/Users/Blaue/OneDrive/Documents/DA_Text/thesis.tex" "thesis.pdf" "thesis" 1775503785.01818 2
   "C:/Users/Blaue/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1770558300 81107 70b8516c68c2e617189c5e44bfd16b96 ""
   "C:/Users/Blaue/AppData/Local/MiKTeX/miktex/data/le/pdftex/pdflatex.fmt" 1768486270 13333487 195b7c5678459e3ad3128965d49aff7e ""
   "C:/Users/Blaue/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ec.enc" 1256929440 2375 baa924870cfb487815765f9094cf3728 ""
@@ -227,13 +227,13 @@
   "C:/Users/Blaue/AppData/Local/Programs/MiKTeX/tex/latex/xkeyval/xkeyval.sty" 1656236919 4937 4ce600ce9bd4ec84d0250eb6892fcf4f ""
   "C:/Users/Blaue/AppData/Local/Programs/MiKTeX/tex/latex/xmpincl/xmpincl.sty" 1633254124 2832 d498c59e94b7dfa3b4bcf74380ad6348 ""
   "C:/Users/Blaue/AppData/Local/Programs/MiKTeX/tex/latex/xstring/xstring.sty" 1693735632 123 a302f2c651a95033260db60e51527ae8 ""
-  "c:/Users/Blaue/OneDrive/Documents/DA_Text/thesis.tex" 1775061138 3945 592c66b39f51493e79ac2659ae3f58e0 ""
+  "c:/Users/Blaue/OneDrive/Documents/DA_Text/thesis.tex" 1775503664 3853 f7a69e866889db0f11d8fde151de754f ""
   "global-const.tex" 1769007115 596 6d8caf81fcfc33cd76c900327f989485 ""
   "glossary.tex" 1769007115 361 e64a8b5f0cec1dade6fdd9693504eada ""
   "header.tex" 1769007115 4767 b7d00df41e273aecbda4cd36aa7cf5f2 ""
   "images/architektur_gesamt" 0 -1 0 ""
   "oath.tex" 1769007115 1334 db7d55b2e3d8794e34024be273dfa030 ""
-  "pdfa.xmpi" 1775061143 5335 20b5b687f16b0d34ae679bc2db45c31d "pdflatex"
+  "pdfa.xmpi" 1775503782 5335 36eaa2b6b7742a237126e10d4a9db1cb "pdflatex"
   "pics/Architecture.png" 1775060120 82955 0c5633952e7e6add671a92b2bcfede23 ""
   "pics/erd_v1.png" 1773942200 14818 b9ef98b19217fa565a45f964cf009291 ""
   "pics/erd_v2.png" 1773942209 48818 e0f32c018d584e4fa5e3ff6225d81333 ""
@@ -242,24 +242,23 @@
   "sections/apis.tex" 1774899085 7920 e801d01475e1a716bbf87c7343e4a356 ""
   "sections/appendix.tex" 1769201405 0 d41d8cd98f00b204e9800998ecf8427e ""
   "sections/architecture.tex" 1775060446 7047 611200929364bd6f6f0320738812d48b ""
-  "sections/ausgangssituation.tex" 1775055065 3523 2594ae3363b599d40f4f3000e4a23f0b ""
+  "sections/ausgangssituation.tex" 1775503537 3548 d13e1fbfb1d57bd09ca62cee2c7797b6 ""
   "sections/connectedArchitecture.tex" 1774894841 1867 3f2f369c5dec6771c51308c05b2d6518 ""
-  "sections/datenbank.tex" 1774895894 3124 637361725dc863b5ce6cb6a182757f69 ""
-  "sections/introduction.tex" 1774967738 3458 fa0a0ee6159e22698441ee5943399463 ""
-  "sections/keycloak.tex" 1774894795 3432 1d0cfe75373c90873948ac227f28313f ""
-  "sections/knowledge.tex" 1775061136 6925 f9b2dd3751d2bbd5e80e853f6a60039d ""
+  "sections/datenbank.tex" 1775503551 3149 3db7f1bc44a1bea6a9de278a9dfddd73 ""
+  "sections/introduction.tex" 1775503567 3483 1557e4e185e83c64dd988d0c57238e84 ""
+  "sections/keycloak.tex" 1775503574 3457 a291219e0cf0f5176a55f7db2f6203ff ""
+  "sections/knowledge.tex" 1775503579 6950 f81924e88cf0ee4aee32899645bbce35 ""
   "sections/quarkus.tex" 1774897061 29574 ae3477e64ef762d66b8084606013ee94 ""
-  "sections/summary.tex" 1769007115 779 24f8eaf4cd6cc4da62bd71efefbd8ccc ""
-  "thesis.aux" 1775061144 28632 13cee73a50b7b676cbe09c854d9f959f "pdflatex"
-  "thesis.bbl" 1775060455 0 d41d8cd98f00b204e9800998ecf8427e "bibtex thesis"
+  "thesis.aux" 0 -1 0 "pdflatex"
+  "thesis.bbl" 1775503757 0 d41d8cd98f00b204e9800998ecf8427e "bibtex thesis"
   "thesis.gls" 1769033182 284 f0ba7b721552f8d20d44371f9979a313 ""
-  "thesis.glsdefs" 1775061144 2074 982e6c0610b12fd59d7a8058fc1679f0 "pdflatex"
+  "thesis.glsdefs" 1775503783 2074 982e6c0610b12fd59d7a8058fc1679f0 "pdflatex"
   "thesis.ind" 0 -1 0 "makeindex thesis.idx"
-  "thesis.lof" 1775061144 683 2cab62c8e548e8f615c8124a741b5ae2 "pdflatex"
-  "thesis.lol" 1775061144 745 dd48c3c8e9b0c4cc033d9ca45f74f22e "pdflatex"
-  "thesis.lot" 1775061144 379 0243b5515027522044c619cf0683950b "pdflatex"
-  "thesis.tex" 1775061138 3945 592c66b39f51493e79ac2659ae3f58e0 ""
-  "thesis.toc" 1775061144 6355 2dc1861c1738c3313eb13106afea9103 "pdflatex"
+  "thesis.lof" 0 -1 0 "pdflatex"
+  "thesis.lol" 1775503783 745 dd48c3c8e9b0c4cc033d9ca45f74f22e "pdflatex"
+  "thesis.lot" 0 -1 0 "pdflatex"
+  "thesis.tex" 1775503664 3853 f7a69e866889db0f11d8fde151de754f ""
+  "thesis.toc" 0 -1 0 "pdflatex"
   "thesis.xmpdata" 1769007115 118 a9e9a49b721e0c1d7b3860f5ea2addf5 ""
   "titlepage/coversheet.pdf" 1769007115 132179 b750154c780a4cfe47b6c7414b90b6b9 ""
   (generated)
@@ -276,4 +275,3 @@
   "thesis.pdf"
   "thesis.toc"
   (rewritten before read)
-  "pdfa.xmpi"
