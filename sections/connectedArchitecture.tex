@@ -1,0 +1,37 @@
+% ============================================================
+% GEMEINSAME ARCHITEKTUR-SECTION
+% Empfehlung: In deiner architecture.tex oder als eigenes
+% Kapitel vor den technischen Einzelteilen
+% ============================================================
+
+\section{Gesamtarchitektur der Anwendung}
+\setauthor{Markus Tran}
+
+Die vorliegende Anwendung folgt einer klar getrennten Client-Server-Architektur,
+bei der Frontend und Backend als eigenständige Einheiten entwickelt wurden und
+ausschließlich über definierte REST-Schnittstellen miteinander kommunizieren.
+
+Das Frontend wurde von \textit{Abdulkerim Cufurovic} als Single-Page-Application
+mit Angular umgesetzt und übernimmt die gesamte Darstellung, Navigation und
+Benutzerinteraktion. Das Backend, dessen Implementierung Gegenstand des vorliegenden
+Teils der Diplomarbeit ist, wurde mit Quarkus realisiert und stellt die
+Geschäftslogik, Datenbankanbindung sowie die Kommunikation mit der externen
+TMDB API bereit.
+
+Die Authentifizierung beider Schichten erfolgt über Keycloak als zentralen
+Identity-Provider. Dieses Zusammenspiel ist in Abbildung~\ref{fig:gesamtarchitektur}
+dargestellt.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.95\textwidth]{images/architektur_gesamt}
+    \caption{Gesamtarchitektur der Anwendung mit Frontend, Backend und Keycloak}
+    \label{fig:gesamtarchitektur}
+\end{figure}
+
+Die strikte Trennung zwischen Frontend und Backend bietet mehrere Vorteile.
+Beide Schichten können unabhängig voneinander weiterentwickelt, getestet und
+deployed werden. Änderungen an der Benutzeroberfläche erfordern keine Anpassungen
+im Backend und umgekehrt, solange die vereinbarten Schnittstellen eingehalten
+werden. Diese Architekturentscheidung war für die Aufteilung der Diplomarbeit
+in zwei eigenständige Projektteile grundlegend.

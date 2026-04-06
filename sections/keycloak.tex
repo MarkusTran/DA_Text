@@ -6,3 +6,64 @@ Keycloak bietet eine umfassende Plattform für die Verwaltung von Benutzern,
 Rollen und Berechtigungen sowie die Unterstützung verschiedener Authentifizierungsprotokolle 
 wie OpenID Connect, OAuth 2.0 und SAML.
 
+
+
+% ============================================================
+% KEYCLOAK – GEGENSEITE DES JWT
+% Empfehlung: In quarkus.tex oder architecture.tex einbauen
+% ============================================================
+
+\section{Keycloak und JWT-Authentifizierung}
+\setauthor{Markus Tran}
+
+Keycloak ist ein quelloffenes Identity- und Access-Management-System, das
+Authentifizierung und Autorisierung als eigenständigen Dienst bereitstellt.
+In der vorliegenden Anwendung übernimmt Keycloak die gesamte Verwaltung von
+Benutzeridentitäten, sodass weder im Frontend noch im Backend eine eigene
+Passwort- oder Benutzerverwaltung implementiert werden musste.
+
+\subsection{Ablauf der Authentifizierung}
+
+Der Authentifizierungsablauf folgt dem OAuth2-Protokoll mit dem Authorization
+Code Flow. Wenn ein Benutzer auf einen geschützten Bereich der Anwendung
+zugreift, leitet das Angular-Frontend ihn an Keycloak weiter. Nach erfolgreicher
+Anmeldung stellt Keycloak ein signiertes JSON Web Token (JWT) aus, das der
+Benutzer bei jeder weiteren Anfrage im \texttt{Authorization}-Header als
+Bearer-Token mitsendet. Dieser Ablauf wird von \textit{Cufurovic} aus
+Frontend-Sicht beschrieben, während der vorliegende Abschnitt die Verarbeitung
+dieses Tokens im Backend behandelt.
+
+\subsection{JWT-Verarbeitung im Backend}
+
+Im Backend wird das vom Frontend mitgesendete JWT-Token von Quarkus mithilfe
+der MicroProfile JWT-Spezifikation automatisch validiert und dekodiert. Ein
+gültiges Token enthält unter anderem den sogenannten \textit{Subject Claim}
+(\texttt{sub}), der die eindeutige Keycloak-UUID des authentifizierten Benutzers
+enthält. Diese UUID wird im \texttt{UserService} über die injizierte
+\texttt{JsonWebToken}-Instanz extrahiert:
+
+\begin{lstlisting}[language=java, caption={Extraktion der Benutzer-UUID aus dem JWT im UserService}]
+@Inject
+JsonWebToken jwt;
+
+public UUID getCurrentUserId() {
+    return UUID.fromString(jwt.getSubject());
+}
+\end{lstlisting}
+
+Die extrahierte UUID dient als primärer Schlüssel des Benutzers in der
+Datenbank und stellt die Verbindung zwischen dem Keycloak-Identitätssystem
+und dem internen Datenbankmodell her. Da die UUID direkt aus dem signierten
+JWT stammt, ist eine Manipulation durch den Client ausgeschlossen.
+
+\subsection{Rollenbasierte Zugriffskontrolle}
+
+Neben der reinen Authentifizierung unterstützt Keycloak auch eine
+rollenbasierte Zugriffskontrolle (Role-Based Access Control, RBAC). Im
+Backend werden Endpunkte über die JAX-RS-Annotation \texttt{@RolesAllowed}
+auf bestimmte Rollen beschränkt. Endpunkte, die benutzerspezifische Daten
+liefern, sind auf die Rollen \texttt{user} und \texttt{medien-abo-users-role}
+beschränkt, während öffentliche Endpunkte mit \texttt{@PermitAll} für alle
+Aufrufer zugänglich sind. Das Frontend prüft denselben Rollenstatus, um
+geschützte Navigationsbereiche ein- oder auszublenden -- beide Schichten
+verwenden damit dieselbe Rolleninformation aus dem JWT.

@@ -1,0 +1,155 @@
+\section{Externe APIs und die Entscheidung für die TMDB API}
+\setauthor{Markus Tran}
+
+Ein zentraler Bestandteil der vorliegenden Anwendung ist die Darstellung von
+Filminformationen und Streaming-Anbietern. Für die Bereitstellung dieser Daten
+wurde eine externe API eingesetzt. Der folgende Abschnitt erläutert, was eine
+API ist, warum eine externe Lösung gegenüber einer eigenen Datenbankpflege
+bevorzugt wurde und nach welchen Kriterien die Entscheidung für die TMDB API
+getroffen wurde.
+
+
+\subsection{Definition und Funktion einer API}
+
+Der Begriff API steht für \textit{Application Programming Interface} und
+bezeichnet eine Schnittstelle, über die eine Anwendung auf Daten oder
+Funktionalitäten eines externen Systems zugreifen kann. Eine API definiert
+dabei, welche Anfragen gestellt werden können, in welchem Format die Antworten
+zurückgegeben werden und wie die Authentifizierung gegenüber dem System erfolgt.
+
+Im Kontext von Webanwendungen werden APIs häufig als REST-Schnittstellen
+realisiert, die über HTTP-Anfragen angesprochen werden und ihre Antworten im
+JSON-Format zurückgeben. Dieses Prinzip findet sich auch in der vorliegenden
+Anwendung selbst wieder: Das Quarkus-Backend stellt dem Angular-Frontend
+ebenfalls eine REST-API bereit und agiert damit gegenüber dem Frontend in
+derselben Rolle wie eine externe API gegenüber dem Backend. Der Unterschied
+liegt lediglich darin, dass das eigene Backend vollständig unter der Kontrolle
+des Entwicklungsteams liegt, während eine externe API von einem Drittanbieter
+betrieben und gepflegt wird.
+
+
+\subsection{Eigene Datenhaltung vs. Auslagerung an eine externe API}
+
+Bei der Konzeption der Anwendung stellte sich grundlegend die Frage, ob
+Filmdaten eigenständig in der Datenbank verwaltet oder über eine externe
+API bezogen werden sollen. Beide Ansätze haben spezifische Vor- und Nachteile,
+die im Folgenden gegenübergestellt werden.
+
+\subsubsection*{Eigene Datenhaltung}
+
+Bei einer vollständig eigenständigen Datenhaltung würden alle Filmdaten --
+Titel, Beschreibungen, Erscheinungsdaten, Bewertungen, Poster und
+Streaming-Verfügbarkeiten -- in der eigenen Datenbank gespeichert und
+gepflegt werden. Dies hätte den Vorteil, dass keinerlei Abhängigkeit von
+einem externen Anbieter besteht, keine API-Schlüssel mit limitierten
+Aufrufkontingenten benötigt werden und alle Daten vollständig kontrolliert
+werden können.
+
+Dem stehen jedoch erhebliche Nachteile gegenüber. Der globale Filmbestand
+umfasst hunderttausende Einträge, was zu einer enormen Datenmenge führt.
+Hinzu kommt der kontinuierliche Wartungsaufwand: Neue Filme müssten manuell
+oder über eigene Crawler erfasst, Streaming-Verfügbarkeiten laufend
+aktualisiert und veraltete Daten bereinigt werden. Dieser Aufwand übersteigt
+den Rahmen eines Diplomarbeitsprojekts bei weitem und würde den Fokus von
+der eigentlichen Applikationsentwicklung ablenken.
+
+\subsubsection*{Auslagerung an eine externe API}
+
+Die Auslagerung der Filmdaten an eine spezialisierte externe API vermeidet
+die genannten Nachteile. Der Datenbankbetrieb, die Pflege des Filmbestands
+sowie die Aktualisierung von Streaming-Verfügbarkeiten werden vollständig
+vom API-Anbieter übernommen. Die eigene Anwendung konsumiert lediglich die
+bereitgestellten Daten und kann sich auf ihre Kernfunktionalität
+konzentrieren.
+
+Als Nachteil ist die Abhängigkeit vom externen Anbieter zu nennen: Bei
+Änderungen an der API-Struktur oder bei einer Einstellung des Dienstes
+wäre eine Anpassung der Anwendung erforderlich. Zudem sind die Aufrufkontingente
+je nach Tarifmodell begrenzt. Für den Anwendungsfall des vorliegenden Projekts
+überwiegen jedoch die Vorteile der Auslagerung deutlich, weshalb diese Lösung
+gewählt wurde.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|p{3.5cm}|p{4.5cm}|p{4.5cm}|}
+\hline
+\textbf{Kriterium} & \textbf{Eigene Datenhaltung} & \textbf{Externe API} \\
+\hline
+Datenkontrolle & Vollständig & Abhängig vom Anbieter \\
+Wartungsaufwand & Sehr hoch & Entfällt \\
+Aktualität & Manuell sicherzustellen & Automatisch durch Anbieter \\
+Datenmenge & Sehr groß & Nicht relevant \\
+API-Kontingent & Nicht relevant & Begrenzt je nach Tarif \\
+Implementierungs- & Sehr hoch & Gering \\
+Aufwand & & \\
+\hline
+\end{tabular}
+\caption{Vergleich: Eigene Datenhaltung vs. externe API}
+\label{tab:api_vergleich}
+\end{table}
+
+
+\subsection{Auswahlkriterien für eine Film-API}
+
+Für die Auswahl einer geeigneten Film-API wurden mehrere Kriterien definiert,
+die für die Anforderungen der vorliegenden Anwendung relevant sind:
+
+\begin{itemize}
+    \item \textbf{Verfügbarkeit und Zugänglichkeit}: Die API soll über einen
+    kostenlosen Zugang verfügen, der für Entwicklungs- und Testzwecke
+    ausreichende Aufrufkontingente bietet.
+    \item \textbf{Aktualität des Filmbestands}: Neue Filme sollen zeitnah
+    in der Datenbank erfasst werden, sodass die Anwendung stets aktuelle
+    Inhalte anzeigen kann.
+    \item \textbf{Streaming-Provider-Integration}: Die API soll nicht nur
+    Filmdaten, sondern auch Informationen zu Streaming-Verfügbarkeiten
+    bereitstellen -- also auf welchen Plattformen ein Film verfügbar ist.
+    Dies ist eine Kernanforderung der Anwendung.
+    \item \textbf{Provider-Gesamtliste}: Zusätzlich zur filmspezifischen
+    Verfügbarkeit soll die API eine vollständige Liste aller bekannten
+    Streaming-Anbieter bereitstellen, die in der eigenen Datenbank
+    synchronisiert werden kann.
+    \item \textbf{Dokumentationsqualität}: Eine verständliche und vollständige
+    API-Dokumentation ist Voraussetzung für eine effiziente Integration.
+    \item \textbf{Verbreitung und Community}: Eine weit verbreitete API
+    bietet erfahrungsgemäß eine stabilere Schnittstelle, regelmäßige
+    Updates und eine aktive Entwickler-Community.
+\end{itemize}
+
+Im Rahmen der Evaluierung wurden unter anderem die \textit{Open Movie Database
+API (OMDb)} sowie die \textit{TMDB API (The Movie Database)} betrachtet.
+Die OMDb API bietet grundlegende Filmdaten, verfügt jedoch über keine
+integrierte Bereitstellung von Streaming-Verfügbarkeiten, was eine
+Kernanforderung der Anwendung darstellt. Damit schied diese Option aus.
+
+
+\subsection{Entscheidung für die TMDB API}
+
+Die Entscheidung fiel auf die \textbf{TMDB API (The Movie Database)}, da
+sie alle definierten Auswahlkriterien erfüllt. Die TMDB ist eine der größten
+öffentlich zugänglichen Film- und Seriendatenbanken und wird von einer
+aktiven Community kontinuierlich gepflegt. Der kostenlose API-Zugang bietet
+ausreichende Aufrufkontingente für den Betrieb der Anwendung.
+
+Für die vorliegende Anwendung sind insbesondere folgende Endpunkte der
+TMDB API relevant:
+
+\begin{itemize}
+    \item \texttt{/movie/\{id\}} -- Abrufen von Filmdaten anhand einer ID
+    \item \texttt{/search/movie} -- Suche nach Filmen anhand eines Titels
+    \item \texttt{/trending/movie/\{timewindow\}} -- Abrufen trendender Filme
+    \item \texttt{/movie/\{id\}/watch/providers} -- Streaming-Anbieter
+    eines Films, gefiltert nach Land
+    \item \texttt{/watch/providers/movie} -- Vollständige Liste aller
+    bekannten Streaming-Anbieter
+\end{itemize}
+
+Besonders hervorzuheben ist die Verfügbarkeit des
+\texttt{/watch/providers}-Endpunkts, der nicht nur angibt, auf welchen
+Plattformen ein Film verfügbar ist, sondern auch zwischen Flatrate-,
+Leih- und Kaufangeboten unterscheidet. In der vorliegenden Anwendung
+werden ausschließlich Flatrate-Anbieter berücksichtigt, da der Fokus
+auf der Verwaltung aktiver Abonnements liegt. Die Authentifizierung
+gegenüber der TMDB API erfolgt über einen Bearer-Token, der über den
+Quarkus-Konfigurationsmechanismus mittels \texttt{@ConfigProperty}
+sicher injiziert wird und nicht im Quellcode hinterlegt ist.

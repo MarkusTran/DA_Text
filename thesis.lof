@@ -1,8 +1,7 @@
 \babel@toc {ngerman}{}\relax 
-\contentsline {figure}{\numberline {1}{\ignorespaces Erstes Entity-Relationship-Diagramm der Anwendung}}{14}{figure.caption.6}%
-\contentsline {figure}{\numberline {2}{\ignorespaces Überarbeitetes Entity-Relationship-Diagramm nach Integration von Keycloak}}{15}{figure.caption.7}%
-\contentsline {figure}{\numberline {3}{\ignorespaces Erstes Entity-Relationship-Diagramm der Anwendung}}{20}{figure.caption.8}%
-\contentsline {figure}{\numberline {4}{\ignorespaces Überarbeitetes Entity-Relationship-Diagramm nach Integration von Keycloak}}{21}{figure.caption.9}%
-\contentsline {figure}{\numberline {5}{\ignorespaces Don Knuth -- CS Allfather}}{25}{figure.caption.12}%
+\contentsline {figure}{\numberline {1}{\ignorespaces Erstes Entity-Relationship-Diagramm der Anwendung}}{32}{figure.caption.8}%
+\contentsline {figure}{\numberline {2}{\ignorespaces Erstes Entity-Relationship-Diagramm der Anwendung}}{33}{figure.caption.9}%
+\contentsline {figure}{\numberline {3}{\ignorespaces Überarbeitetes Entity-Relationship-Diagramm nach Integration von Keycloak}}{34}{figure.caption.10}%
+\contentsline {figure}{\numberline {4}{\ignorespaces Gesamtarchitektur der Anwendung mit Frontend, Backend und Keycloak}}{36}{figure.caption.11}%
 \def \@chapapp {\appendixname }
 \providecommand \tocbasic@end@toc@file {}\tocbasic@end@toc@file 

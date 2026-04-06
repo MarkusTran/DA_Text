@@ -1,0 +1,120 @@
+Die vorliegende Anwendung adressiert ein konkretes Problem des modernen
+Medienkonsums: die zunehmende Unübersichtlichkeit bei der Verwaltung mehrerer
+paralleler Streaming-Abonnements. Um die Relevanz und den Mehrwert der
+entwickelten Lösung zu verdeutlichen, werden in diesem Kapitel die fachlichen
+Grundlagen des Abo- und Mediatheken-Managements erläutert.
+
+
+\section{Zentrale Verwaltung von Abonnements und Laufzeiten}
+
+Der Markt für Video-on-Demand-Dienste hat sich in den vergangenen Jahren stark
+ausdifferenziert. Neben den frühen Marktführern wie Netflix und Amazon Prime
+Video sind zahlreiche weitere Anbieter entstanden -- darunter Disney+, Apple TV+,
+Paramount+ und viele nationale Mediatheken. Eine repräsentative Studie des
+Digitalverbands Bitkom aus dem Jahr 2023 zeigt, dass ein Großteil der deutschen
+Haushalte gleichzeitig mehrere Streaming-Dienste abonniert hat.
+
+Diese Fragmentierung des Angebots führt zu einer praktischen Herausforderung:
+Nutzerinnen und Nutzer verlieren den Überblick über ihre aktiven Abonnements,
+die jeweiligen Abrechnungszeitpunkte und die damit verbundenen monatlichen oder
+jährlichen Kosten. Anders als bei klassischen Dauerschuldverhältnissen -- etwa
+Mobilfunkverträgen -- erfolgt die Abrechnung von Streaming-Diensten häufig
+automatisch und ohne gesonderte Zahlungsbenachrichtigung, was eine unbewusste
+Fortsetzung nicht mehr genutzter Abonnements begünstigt.
+
+Eine zentrale Verwaltung von Abonnements und deren Laufzeiten schafft hier
+Abhilfe. Durch die strukturierte Erfassung aller aktiven Dienste, ihrer
+Abrechnungszyklen -- monatlich oder jährlich -- sowie der jeweiligen
+Abrechnungsdaten erhalten Nutzer einen konsolidierten Überblick über ihre
+laufenden Verpflichtungen. Dies ermöglicht eine bewusste Entscheidung darüber,
+welche Dienste tatsächlich genutzt werden und welche gekündigt werden könnten.
+
+
+\section{Darstellung von Verfügbarkeiten von Filmen und Serien}
+
+Ein weiteres zentrales Problem des fragmentierten Streaming-Markts ist die
+uneinheitliche Verfügbarkeit von Inhalten. Ein Film oder eine Serie ist
+selten auf allen Plattformen gleichzeitig verfügbar. Stattdessen sind Inhalte
+exklusiv an bestimmte Anbieter gebunden oder wechseln im Laufe der Zeit
+zwischen verschiedenen Plattformen.
+
+Für Nutzer bedeutet dies, dass die Suche nach einem konkreten Titel häufig
+mehrere manuelle Suchanfragen auf unterschiedlichen Plattformen erfordert.
+Dieser Prozess ist zeitaufwändig und frustrierend, insbesondere wenn der
+gesuchte Inhalt auf keiner der abonnierten Plattformen verfügbar ist.
+
+Eine Anwendung, die Filminformationen mit der Verfügbarkeit bei
+Streaming-Anbietern verknüpft, löst dieses Problem. Nutzer können direkt
+bei der Filmsuche erkennen, auf welchen Plattformen ein Titel verfügbar
+ist und -- in Kombination mit der Abonnementverwaltung -- ob dieser Titel
+auf einer ihrer bereits abonnierten Plattformen abrufbar ist. Diese
+Verknüpfung von Inhaltsdaten und Abonnementstatus stellt den zentralen
+fachlichen Mehrwert der vorliegenden Anwendung dar.
+
+Die technische Grundlage für diese Funktionalität bildet die TMDB API,
+die neben umfangreichen Filmdaten auch länderspezifische Informationen
+zu Streaming-Verfügbarkeiten bereitstellt. Dabei wird zwischen
+verschiedenen Bezugsmodellen unterschieden: Flatrate-Verfügbarkeit
+im Rahmen eines Abonnements, Leihmodelle sowie Kaufoptionen. Im Kontext
+der vorliegenden Anwendung sind ausschließlich Flatrate-Angebote relevant,
+da der Fokus auf der Verwaltung aktiver Abonnements liegt.
+
+
+\section{Mehrwert einer zentralen Applikation für Nutzer}
+
+Der Mehrwert der entwickelten Anwendung ergibt sich aus der Zusammenführung
+zweier bisher getrennter Informationsquellen: der persönlichen
+Abonnementverwaltung und der Suche nach Streaming-Verfügbarkeiten. Bestehende
+Lösungen adressieren diese Bereiche typischerweise isoliert voneinander.
+
+Allgemeine Budgetverwaltungs-Apps ermöglichen die Erfassung von
+Abonnementkosten, bieten jedoch keine Verknüpfung mit konkreten Filminhalten.
+Streaming-Suchmaschinen wie JustWatch zeigen an, auf welchen Plattformen ein
+Film verfügbar ist, verfügen jedoch über keine persönliche
+Abonnementverwaltung, die den individuellen Nutzerstatus berücksichtigt.
+
+Die vorliegende Anwendung kombiniert beide Aspekte in einer einheitlichen
+Oberfläche. Nutzer können ihre Abonnements verwalten, nach Filmen suchen
+und direkt erkennen, ob ein gesuchter Titel auf einer ihrer abonnierten
+Plattformen verfügbar ist. Dieser personalisierte Ansatz reduziert den
+kognitiven Aufwand bei Entscheidungen über Streaming-Inhalte und schafft
+einen konkreten praktischen Nutzen im Alltag.
+
+Darüber hinaus trägt die Anwendung zur Kostentransparenz bei. Durch die
+strukturierte Erfassung von Abrechnungszyklen und -daten können Nutzer
+ihre monatlichen Ausgaben für Streaming-Dienste besser nachvollziehen
+und bewusster gestalten. Gerade bei jährlichen Abrechnungsmodellen, die
+aufgrund ihres günstigeren Preises häufig gewählt werden, geht das
+konkrete Abrechnungsdatum im Alltag leicht verloren.
+
+
+\section{Datenschutz- und Sicherheitsanforderungen}
+
+Da die vorliegende Anwendung personenbezogene Daten verarbeitet --
+insbesondere Informationen über abonnierte Streaming-Dienste und deren
+Abrechnungsdaten -- sind Datenschutz- und Sicherheitsanforderungen ein
+wesentlicher Bestandteil des Systemdesigns.
+
+Im Sinne der Datensparsamkeit, einem Grundprinzip der Datenschutz-Grundverordnung
+(DSGVO), werden ausschließlich jene Daten erfasst und gespeichert, die für
+die Kernfunktionalität der Anwendung erforderlich sind. Auf die Speicherung
+besonders sensibler Daten wie Zahlungsinformationen oder Zugangsdaten zu
+den jeweiligen Streaming-Plattformen wird bewusst verzichtet. Die Anwendung
+beschränkt sich auf die Verwaltung von Metadaten der Abonnements --
+Anbieter, Abrechnungszyklus und Datum der letzten Abbuchung.
+
+Die Authentifizierung und Autorisierung der Nutzer wird vollständig über
+Keycloak abgewickelt, ein etabliertes Open-Source-System für
+Identity- und Access-Management. Durch diese Auslagerung wird das Risiko
+einer unsicheren Eigenimplementierung von Passwortlogik eliminiert.
+Zugangsdaten werden zu keinem Zeitpunkt durch die Anwendung selbst
+verarbeitet oder gespeichert.
+
+Der Zugriff auf benutzerspezifische Daten ist durch eine
+rollenbasierte Zugriffskontrolle abgesichert. Geschützte Endpunkte des
+Backends sind ausschließlich für authentifizierte Nutzer mit den
+entsprechenden Rollen zugänglich. Das Frontend steuert darüber hinaus
+den Zugriff auf geschützte Navigationsbereiche, sodass persönliche
+Inhalte nicht ohne gültige Anmeldung angezeigt werden. Die Kommunikation
+zwischen Frontend, Backend und Keycloak erfolgt ausschließlich über
+verschlüsselte HTTPS-Verbindungen.

@@ -405,6 +405,61 @@ bereit. Sie ermöglicht das Abrufen aller in der Datenbank gespeicherten
 Streaming-Anbieter sowie das manuelle Auslösen einer Synchronisierung mit
 der TMDB API über den Endpunkt \texttt{GET /api/providers/sync}.
 
+\subsection{REST-Schnittstellen zwischen Frontend und Backend}
+\setauthor{Markus Tran}
+
+Die Kommunikation zwischen dem Angular-Frontend und dem Quarkus-Backend
+erfolgt ausschließlich über HTTP-basierte REST-Endpunkte. Das Frontend
+verwendet dafür Angular-Services, die HTTP-Anfragen strukturiert kapseln
+und die Antworten an die jeweiligen Komponenten weitergeben. Das Backend
+stellt diese Endpunkte über JAX-RS-annotierte Resource-Klassen bereit.
+
+Die folgende Tabelle gibt einen Überblick über die zentralen Endpunkte
+der Anwendung, ihre Funktion sowie die Zugriffsrechte:
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{|l|l|l|p{4cm}|}
+\hline
+\textbf{Methode} & \textbf{Endpunkt} & \textbf{Zugriff} & \textbf{Beschreibung} \\
+\hline
+GET & \texttt{/api/movies/id/\{id\}} & öffentlich &
+    Filmdaten anhand einer ID \\
+GET & \texttt{/api/movies/name/\{name\}} & öffentlich &
+    Filmsuche nach Titel \\
+GET & \texttt{/api/movies/trending/\{window\}} & öffentlich &
+    Trending-Filme \\
+GET & \texttt{/api/movies/\{id\}/providers/filtered} & öffentlich &
+    Provider eines Films nach Land \\
+GET & \texttt{/api/movies/\{id\}/providers/for-user} & geschützt &
+    Provider mit Ownership-Flag für den aktuellen User \\
+GET & \texttt{/api/users/me} & geschützt &
+    Profildaten des aktuellen Users \\
+GET & \texttt{/api/users/me/providers} & geschützt &
+    Alle Provider mit Ownership-Flag \\
+PUT & \texttt{/api/users/me/subscriptions} & geschützt &
+    Abonnements aktualisieren \\
+POST & \texttt{/api/users/me/history} & geschützt &
+    Film zur History hinzufügen \\
+GET & \texttt{/api/users/me/history} & geschützt &
+    History des Users abrufen \\
+DELETE & \texttt{/api/users/me/history/\{id\}} & geschützt &
+    History-Eintrag löschen \\
+GET & \texttt{/api/providers} & öffentlich &
+    Alle Provider aus der Datenbank \\
+\hline
+\end{tabular}
+\caption{REST-Endpunkte des Backends und deren Zugriffsrechte}
+\label{tab:rest_endpoints}
+\end{table}
+
+Geschützte Endpunkte erfordern ein gültiges Bearer-Token im
+\texttt{Authorization}-Header. Das Frontend sendet dieses Token nach
+erfolgreicher Authentifizierung über Keycloak automatisch mit, wie von
+\textit{Cufurovic} beschrieben. Das Backend validiert das Token bei
+jedem Aufruf und extrahiert daraus die Benutzeridentität.
+
 \subsection{DTO -- Data Transfer Objects}
 
 In der vorliegenden Anwendung werden DTOs konsequent eingesetzt, um die
@@ -447,129 +502,50 @@ die Struktur der TMDB-API-Antwort ab und ermöglicht eine typsichere
 Weiterverarbeitung der Rohdaten, bevor diese in die Datenbank geschrieben
 werden.
 
-\section{Datenbankkonzept und architektonische Entscheidungen}
+\subsection{Zusammenspiel von ProviderInfoDTO und Frontend-Darstellung}
 \setauthor{Markus Tran}
 
-Für das Backend der Anwendung spielt die Wahl der geeigneten Datenbanktechnologie
-eine zentrale Rolle. Trotz vorhandener Kenntnisse im Bereich nicht-relationaler
-Datenbanken (NoSQL) -- wie etwa MongoDB oder Vektordatenbanken -- wurde im Rahmen
-dieses Projekts bewusst eine relationale Datenbank eingesetzt.
+Ein besonders anschauliches Beispiel für das Zusammenspiel zwischen
+Backend-DTO und Frontend-Darstellung ist der \texttt{ProviderInfoDTO}.
+Dieser DTO wurde gezielt so entworfen, dass er exakt die Informationen
+enthält, die das Frontend für die Anzeige von Streaming-Anbietern
+im Zusammenhang mit einem Film benötigt.
 
-Die Entscheidung für ein relationales Datenbanksystem basiert auf mehreren Faktoren.
-Die Anwendung weist eine klar strukturierte und logisch getrennte Datenarchitektur
-auf, wodurch sich die Daten und deren Beziehungen gut in einem relationalen Modell
-abbilden lassen. Entitäten und ihre Relationen konnten somit eindeutig definiert
-und konsistent strukturiert werden. Dieses Vorgehen entspricht dem etablierten
-Standard bei Anwendungen mit stark strukturierten Daten und klar definierten
-Geschäftsprozessen.
+Das Frontend stellt laut \textit{Cufurovic} in der Detailansicht eines
+Films die verfügbaren Streaming-Anbieter dar und hebt dabei visuell
+hervor, welche Anbieter der eingeloggte Benutzer bereits abonniert hat.
+Genau für diesen Anwendungsfall wurde das boolesche Feld
+\texttt{ownedByUser} in den \texttt{ProviderInfoDTO} aufgenommen:
 
-Ein weiterer wesentlicher Aspekt ist die Skalierbarkeit des Projekts. Relationale
-Datenbanken bieten durch Normalisierung, Transaktionssicherheit (ACID-Prinzip) und
-klar definierte Beziehungen eine stabile Grundlage für zukünftige Erweiterungen.
-Voraussetzung für eine nachhaltige Skalierbarkeit ist jedoch eine sorgfältig
-durchdachte Datenbankstruktur. Eine frühzeitig geplante und konsistente Modellierung
--- beispielsweise durch ein Entity-Relationship-Diagramm (ERD) -- ist essenziell,
-um spätere strukturelle Anpassungen zu minimieren.
+\begin{lstlisting}[language=java, caption={ProviderInfoDTO mit ownedByUser-Flag}]
+public record ProviderInfoDTO(
+    Long providerId,
+    String name,
+    String logoUrl,
+    boolean ownedByUser
+) {}
+\end{lstlisting}
 
+Das Flag wird im \texttt{TmdbService} durch den Abgleich der von der
+TMDB API gelieferten Provider-IDs mit den in der Datenbank gespeicherten
+Abonnements des Benutzers gesetzt. Die Ergebnisliste wird anschließend
+so sortiert, dass die vom Benutzer abonnierten Anbieter an erster Stelle
+erscheinen -- eine Entscheidung, die direkt auf die Anforderung des
+Frontends zurückgeht, relevante Inhalte priorisiert darzustellen.
 
-\subsection{Herausforderungen im Entwicklungsprozess}
+Dieses Beispiel verdeutlicht, wie DTO-Design und Frontend-Anforderungen
+eng verzahnt sind: Das Backend kapselt die Komplexität des Datenbankabgleichs
+und der API-Kommunikation, während das Frontend ein einfaches,
+direkt verwendbares Objekt erhält.
 
-Im Verlauf der Diplomarbeit traten mehrere strukturelle Herausforderungen auf, die
-im Sinne einer transparenten Dokumentation offen dargestellt werden sollen.
+\section{application properties}
 
-Zu Beginn der Implementierungsphase wurde ohne vollständig ausgearbeitetes
-Gesamtkonzept mit der Programmierung begonnen. Das Entity-Relationship-Diagramm
-wurde parallel zur Entwicklung erstellt, wodurch sich die Datenbankstruktur
-dynamisch entwickelte. Dieses iterative Vorgehen führte zwar zu schneller
-praktischer Umsetzung, hatte jedoch den Nachteil, dass strukturelle Änderungen
-im Nachhinein größeren Anpassungsaufwand verursachten.
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.9\textwidth]{pics/erd_v1}
-    \caption{Erstes Entity-Relationship-Diagramm der Anwendung}
-    \label{fig:erd_v1}
-\end{figure}
-
-Eine weitere wesentliche Herausforderung ergab sich durch die späte Integration
-von Keycloak als Identity- und Access-Management-Lösung. Ursprünglich war die
-Benutzerverwaltung eigenständig implementiert worden. Durch die nachträgliche
-Einführung von Keycloak mussten die bestehenden User-Strukturen grundlegend
-überarbeitet werden. Dies hatte zur Folge, dass die Benutzerentitäten angepasst
-werden mussten, die Authentifizierungs- und Autorisierungslogik neu strukturiert
-wurde sowie abhängige Klassen und Beziehungen refaktoriert und teilweise neu
-implementiert werden mussten. Diese Umstellung führte zu zusätzlichem
-Entwicklungsaufwand, zeigte jedoch zugleich die Bedeutung einer frühzeitigen
-Architekturentscheidung -- insbesondere im Bereich der Sicherheits- und
-Authentifizierungsmechanismen.
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.9\textwidth]{pics/erd_v2}
-    \caption{Überarbeitetes Entity-Relationship-Diagramm nach Integration von Keycloak}
-    \label{fig:erd_v2}
-\end{figure}
-
-
-\subsection{Modellierung der Many-to-Many-Beziehung und strukturelle Weiterentwicklung}
-
-Im weiteren Verlauf der Systemarchitektur zeigte sich deutlich der Mehrwert einer
-sauberen relationalen Modellierung, insbesondere bei der Abbildung von
-Many-to-Many-Beziehungen.
-
-Im Kontext der vorliegenden Applikation -- einem Mediatheken-Abonnement-Manager --
-besteht zwischen den Entitäten \textit{User} und \textit{Provider} keine einfache
-1:n-Beziehung, sondern eine n:m-Beziehung. Ein Benutzer kann mehrere Anbieter
-abonnieren, während ein Anbieter von mehreren Benutzern genutzt werden kann.
-
-Die Einführung einer eigenständigen Relationstabelle (\texttt{UserProviderSubscription})
-dient hierbei nicht ausschließlich der technischen Verknüpfung zweier Fremdschlüssel.
-Vielmehr übernimmt diese Tabelle eine fachlich zentrale Rolle innerhalb des
-Domänenmodells. In der Relationstabelle werden zusätzliche Attribute gespeichert,
-die die konkrete Ausprägung der Beziehung beschreiben:
-
-\begin{itemize}
-    \item Beginn des Abonnements (Startdatum)
-    \item Ende des Abonnements (Enddatum)
-    \item Zahlungszyklus (Enum: monatlich oder jährlich)
-\end{itemize}
-
-Diese Attribute gehören semantisch weder ausschließlich zum Benutzer noch
-ausschließlich zum Anbieter, sondern definieren die konkrete Vertragsbeziehung
-zwischen beiden Entitäten. Die Modellierung über eine separate Relationstabelle
-ermöglicht somit eine fachlich korrekte Abbildung der Geschäftslogik, die
-Erweiterbarkeit um weitere beziehungsbezogene Attribute -- etwa Preis, Rabatt
-oder Kündigungsstatus -- sowie eine klare Trennung der Verantwortlichkeiten
-innerhalb des Datenmodells. Gerade an dieser Stelle wird deutlich, dass
-relationale Datenbanken ihre Stärke bei strukturierten und stark
-beziehungsorientierten Datenmodellen ausspielen.
-
-
-\subsection{Reflexion der anfänglichen Modellierungsentscheidung}
-
-Rückblickend stellt sich die anfängliche Entscheidung, Anbieter als
-\texttt{Set<String>} direkt innerhalb der User-Entität zu speichern, als
-struktureller Fehler heraus. Diese vereinfachte Modellierung war zwar für einen
-ersten Prototyp funktional ausreichend, führte jedoch zu mehreren konzeptionellen
-Einschränkungen:
-
-\begin{enumerate}
-    \item Es konnten keine anbieterspezifischen Metadaten gespeichert werden
-    (z.\,B. Website, Kategorie oder Beschreibung).
-    \item Die konkrete Ausgestaltung der Beziehung -- Startdatum, Zahlungszyklus
-    etc. -- war nicht modellierbar.
-    \item Eine konsistente Datenhaltung war nicht gewährleistet, da String-Werte
-    fehleranfällig und nicht referenziell abgesichert sind.
-    \item Erweiterungen des Systems hätten tiefgreifende strukturelle Änderungen
-    erfordert.
-\end{enumerate}
-
-Insbesondere der Umstand, dass beziehungsrelevante Informationen nicht abgebildet
-werden konnten, verdeutlicht die Problematik dieser frühen Designentscheidung.
-Die Speicherung als String-Set widersprach den Grundprinzipien der Normalisierung
-und verhinderte eine skalierbare Weiterentwicklung des Systems. Erst durch die
-Einführung einer eigenständigen \texttt{Provider}-Entität sowie einer
-Relationstabelle konnte das Datenmodell den fachlichen Anforderungen der
-Applikation gerecht werden. Diese Umstrukturierung stellt einen wesentlichen
-architektonischen Reifeprozess im Projektverlauf dar.
-
+Die Konfiguration der Quarkus-Anwendung erfolgt über die Datei \texttt{application.properties}, die sich im Verzeichnis \texttt{src/main/resources} befindet. 
+Hier werden zentrale Einstellungen wie der TMDB-API-Schlüssel, die Datenbankverbindungsdetails sowie Keycloak-Konfigurationsparameter definiert.
+Der TMDB-API-Schlüssel wird über die Property \texttt{tmdb.api.key} bereitgestellt und im \texttt{TmdbService} mittels \texttt{@ConfigProperty} injiziert.
+Die Datenbankverbindung wird über die \texttt{quarkus.datasource}-Properties konfiguriert, wobei die URL, der Benutzername und das Passwort für die PostgreSQL-Datenbank angegeben werden.
+Zudem werden die Keycloak-Konfigurationsparameter über die \texttt{quarkus.oidc}-Properties definiert. 
+Diese umfassen die Auth-Server-URL, den Realm-Namen, die Client-ID sowie die Anforderung von Rollen im Access-Token. 
+auch wird angegeben auf welchen Routen keine Authentifizierung erforderlich ist, um öffentliche Endpunkte wie die Filmsuche oder die Anzeige von Filmdetails zugänglich zu machen.
+Die vollständige \texttt{application.properties} enthält zudem weitere Einstellungen wie die Angabe des Hibernate-Dialekts, die Aktivierung von SQL-Logging und die Konfiguration von CORS, um die Kommunikation mit dem Angular-Frontend zu ermöglichen. 
+Es wird auch in der Application.properties definiert, dass die Anwendung als native ausführbare Datei gebaut werden soll, was die Vorteile der AOT-Kompilierung von Quarkus nutzt.

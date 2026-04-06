@@ -1,0 +1,22 @@
+\section{Aktuelle Herausforderungen bei Streaming-Abonnements}
+Der Streaming-Markt hat sich in den vergangenen Jahren stark fragmentiert. Inhalte, 
+die früher auf einer einzelnen Plattform verfügbar waren, sind heute auf zahlreiche Anbieter 
+verteilt. Für Endnutzer entsteht dadurch die Notwendigkeit, mehrere Abonnements gleichzeitig 
+zu verwalten, um Zugang zu einem breiten Inhaltsspektrum zu erhalten. Gleichzeitig führt die 
+fehlende Transparenz darüber, welcher Inhalt auf welcher Plattform verfügbar ist, dazu, 
+dass Nutzer denselben Inhalt unter Umständen mehrfach bezahlen, ohne sich dessen bewusst zu sein.
+\section{Probleme durch parallele Abos und doppelte Abbuchungen}
+Ein zentrales Problem bei der parallelen Nutzung mehrerer Streaming-Dienste ist 
+der finanzielle Mehraufwand durch redundante Abonnements. Da viele Anbieter überlappende 
+Inhaltsbibliotheken aufweisen, kommt es häufig vor, dass ein Film oder eine Serie 
+bei mehreren Diensten gleichzeitig verfügbar ist, die der Nutzer bereits abonniert hat. 
+Mangels einer zentralen Übersicht bleibt dieser Umstand oft unentdeckt, was zu vermeidbaren 
+monatlichen Mehrkosten führt.Darüber hinaus 
+veranlasst die unklare Verfügbarkeit von Inhalten Nutzer dazu, bei jeder Suchanfrage mehrere Plattformen manuell zu durchsuchen. Eine konsolidierte Plattform, die diese Informationen bündelt, kann diesen Aufwand erheblich reduzieren.
+\section{Bestehende Lösungen und deren Schwächen}
+Es existieren bereits Plattformen, die für einen gesuchten Film oder eine Serie anzeigen, auf welchen Streaming-Diensten dieser Inhalt verfügbar ist. Ein bekanntes Beispiel hierfür ist JustWatch. Diese Lösungen bieten jedoch keine Funktionalität zur Verwaltung eigener Abonnements und beschränken sich in der Regel auf die Darstellung populärer Inhalte und Anbieter. Zudem ähneln diese Plattformen eher Bewertungs- und Entdeckungsportalen als einem persönlichen Abonnement-Management-Tool. Eine individualisierte Übersicht, die die tatsächlich vom Nutzer abonnierten Dienste in den Mittelpunkt stellt, wird von bestehenden Lösungen nicht geboten.
+\section{Abgrenzung zu Standard-Webprojekten}
+Im Unterschied zu herkömmlichen Webprojekten zeichnet sich die vorliegende Anwendung durch mehrere technische und konzeptionelle Besonderheiten aus.
+Ein wesentliches Merkmal ist der Einsatz von Keycloak als externes Identity- und Access-Management-System. Anstatt eine eigene Authentifizierungslösung zu implementieren, wird die Nutzerverwaltung, inklusive Registrierung, Login und Rechtevergabe, vollständig an Keycloak ausgelagert. Dies erhöht die Sicherheit der Anwendung erheblich und entspricht modernen Standards im Bereich der Authentifizierung.
+Eine weitere Besonderheit liegt in der gezielten Nutzung der The Movie Database (TMDb) API zur Bereitstellung von Film- und Seriendaten. Durch diese Auslagerung auf eine externe, kontinuierlich gepflegte Datenquelle wird der eigene Datenspeicher auf ein Minimum reduziert. Gleichzeitig wird sichergestellt, dass Nutzer stets auf aktuelle und vollständige Inhaltsinformationen zugreifen können, ohne dass eine aufwändige eigene Datenpflege notwendig wäre.
+Die Kombination aus externem Identitätsmanagement, API-basierter Datenbeschaffung und einer personalisierten Abonnementverwaltung hebt dieses Projekt deutlich von einem klassischen CRUD-Webprojekt ab und stellt erhöhte Anforderungen an die Systemarchitektur, die Schnittstellenintegration sowie die Datensicherheit.
